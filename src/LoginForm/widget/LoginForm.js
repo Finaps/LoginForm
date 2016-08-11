@@ -16,6 +16,7 @@
 define([
 
     "mxui/widget/_WidgetBase", "dijit/_TemplatedMixin", "mxui/dom",
+    "LoginForm/lib/jquery",
     "dojo/dom", "dojo/query", "dojo/dom-class",
     "dojo/dom-construct", "dojo/dom-style", "dojo/on",
     "dojo/_base/lang", "dojo/_base/declare", "dojo/text",
@@ -25,6 +26,7 @@ define([
     "dojo/text!LoginForm/widget/templates/LoginFormWithoutShowPassword.html", "dojo/sniff"
 
 ], function (_WidgetBase, _TemplatedMixin, dom,
+              _jQuery,
              dojoDom, dojoQuery, domClass,
              domConstruct, domStyle, dojoOn,
              dojoLang, declare, text,
@@ -33,6 +35,7 @@ define([
              template, templateWithoutShowPassword) {
     "use strict";
     // Declare widget.
+    var $ = _jQuery.noConflict(true);
     return declare ("LoginForm.widget.LoginForm", [ _WidgetBase, _TemplatedMixin ], {
 
         // Template path, set in the postMixInProperties function
@@ -93,8 +96,10 @@ define([
 
         // Internal variables. Non-primitives created in the prototype are shared between all widget instances.
         _handle: null,
+        _startTime: null,
         _userInput : null,
         _passInput : null,
+        _widgetId: null,
         _captionShow : "",
         _captionHide : "",
         _indicator : null,
@@ -111,8 +116,16 @@ define([
             }
         },
         // dijit._WidgetBase.postCreate is called after constructing the widget. Implement to do extra setup work
+        constructor: function () {
+            this._handles = [];
+            if (typeof window._grecaptcha_widgets === "undefined") {
+                window._grecaptcha_widgets = [];
+            }
+        },
+        
         postCreate: function () {
             logger.debug(this.id + ".postCreate");
+            this._addRecaptcha(); 
             this._getI18NMap();
             this._updateRendering();
             this._setupEvents();
@@ -372,6 +385,48 @@ define([
                 domAttr.set(this.usernameInputNode, "type", this.keyboardType);
             }
         },
+        
+        _addRecaptcha: function(){
+            
+            this._recaptchaNode = domConstruct.create("div", {
+                "id" : this.id + "-recaptcha"
+            });
+            
+            domConstruct.place(this._recaptchaNode, this.id);
+            
+            if (window.__google_recaptcha_client !== true && $("#google_recaptcha_script").length === 0) {
+                try {
+                    this._googleRecaptchaApiScript = domConstruct.create("script", {"src" : ("https:" === document.location.protocol ? "https" : "http") + "://www.google.com/recaptcha/api.js?render=explicit",  "id":"google_recaptcha_script", "async":"true", "defer":"true"});
+                    domConstruct.place(this._googleRecaptchaApiScript, dojoQuery("head")[0]);
+                    this._renderRecaptcha();
+                } catch(e) {
+                    console.error("Failed to include Google Recaptcha script tag: " + e.message);
+                }
+            }
+        },
+        
+        _renderRecaptcha: function(){
+            this._startTime = new Date().getTime();
+            if (typeof grecaptcha !== 'undefined') {
+                try {
+                    this._widgetId = grecaptcha.render(this.id + "-recaptcha", {'sitekey' : '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',  "callback": dojoLang.hitch(this,function(response){
+                    // store response token in entity for server side validation
+                    console.log(response);
+                    })});
+                    window._grecaptcha_widgets.push(this._widgetId);
+                } catch(e) {
+                    console.error("Failed to render recaptcha widget: " + e.message);
+                }
+            } else {
+                var duration =  new Date().getTime() - this._startTime;
+                if (duration > 15000) {
+                    console.warn("Recaptcha widget " + this.id + " timeout, grecaptcha is undefined.");
+                    return;
+                }
+                setTimeout(dojoLang.hitch(this,this._renderRecaptcha),250);
+            }
+        },
+        
         /**
          * Handles whether to show/hide the Username and Password Labels
          * @private
