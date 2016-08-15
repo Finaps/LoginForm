@@ -36,7 +36,7 @@ define([
     "use strict";
     // Declare widget.
     var $ = _jQuery.noConflict(true);
-    return declare ("LoginForm.widget.LoginForm", [ _WidgetBase, _TemplatedMixin ], {
+    return declare("LoginForm.widget.LoginForm", [ _WidgetBase, _TemplatedMixin ], {
 
         // Template path, set in the postMixInProperties function
         templateString: "",
@@ -53,7 +53,7 @@ define([
         forgotPasswordLinkNode: null,
         usernameLabelNode: null,
         passwordLabelNode: null,
-        mfCheckToken: null, 
+        mfCheckToken: null,
 
         // Parameters configured in the Modeler.
         /**
@@ -100,7 +100,7 @@ define([
         _startTime: null,
         _userInput : null,
         _passInput : null,
-        _context: null, 
+        _context: null,
         _widgetId: null,
         _captionShow : "",
         _captionHide : "",
@@ -127,7 +127,7 @@ define([
         
         postCreate: function () {
             logger.debug(this.id + ".postCreate");
-            this._addRecaptcha(); 
+            this._addRecaptcha();
             this._getI18NMap();
             this._updateRendering();
             this._setupEvents();
@@ -136,7 +136,7 @@ define([
         update: function (object, callback) {
             this._context = object;
             callback();
-         },
+        },
         // Rerender the interface.
         _updateRendering: function () {
             logger.debug(this.id + "._updateRendering");
@@ -369,7 +369,7 @@ define([
             if (this.convertCase === "toUpperCase") {
                 return username.toUpperCase();
             }
-            if  (this.convertCase === "toLowerCase") {
+            if (this.convertCase === "toLowerCase") {
                 return username.toLowerCase();
             }
             return username;
@@ -393,7 +393,7 @@ define([
             }
         },
         
-        _addRecaptcha: function(){
+        _addRecaptcha: function () {
             
             this._recaptchaNode = domConstruct.create("div", {
                 "id" : this.id + "-recaptcha"
@@ -403,31 +403,31 @@ define([
             
             if (window.__google_recaptcha_client !== true && $("#google_recaptcha_script").length === 0) {
                 try {
-                    this._googleRecaptchaApiScript = domConstruct.create("script", {"src" : ("https:" === document.location.protocol ? "https" : "http") + "://www.google.com/recaptcha/api.js?render=explicit",  "id":"google_recaptcha_script", "async":"true", "defer":"true"});
+                    this._googleRecaptchaApiScript = domConstruct.create("script", {"src" : ("https:" === document.location.protocol ? "https" : "http") + "://www.google.com/recaptcha/api.js?render=explicit",  "id": "google_recaptcha_script", "async" : "true", "defer" : "true"});
                     domConstruct.place(this._googleRecaptchaApiScript, dojoQuery("head")[0]);
                     this._renderRecaptcha();
-                } catch(e) {
+                } catch (e) {
                     console.error("Failed to include Google Recaptcha script tag: " + e.message);
                 }
             }
         },
         
-        _renderRecaptcha: function(){
+        _renderRecaptcha: function () {
             this._startTime = new Date().getTime();
             if (typeof grecaptcha !== 'undefined') {
                 try {
-                    this._widgetId = grecaptcha.render(this.id + "-recaptcha", {'sitekey' : '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',  "callback": dojoLang.hitch(this,function(response){
+                    this._widgetId = grecaptcha.render(this.id + "-recaptcha", {'sitekey' : '6Lf3oScTAAAAAGVAdNUdmHLYZn-05maaSMa9fZxN',  "callback": dojoLang.hitch(this, function (response) {
                         this._context.set(this.responseTokenAttribute, response);
                         mx.data.action({
                             params: {
                                 applyto: 'selection',
                                 actionname: this.mfCheckToken,
-                                guids:[this._context.getGuid()]
+                                guids: [this._context.getGuid()]
                             },
-                            callback: dojoLang.hitch(this function(obj){
+                            callback: dojoLang.hitch(this, function (obj) {
                                 console.log("success");
                             }),
-                            error: dojoLang.hitch(this, function(error){
+                            error: dojoLang.hitch(this, function (error) {
                                 console.log("failed mf");
                             })
                         }, this);
@@ -444,7 +444,7 @@ define([
                     console.warn("Recaptcha widget " + this.id + " timeout, grecaptcha is undefined.");
                     return;
                 }
-                setTimeout(dojoLang.hitch(this,this._renderRecaptcha),250);
+                setTimeout(dojoLang.hitch(this, this._renderRecaptcha), 250);
             }
         },
         
