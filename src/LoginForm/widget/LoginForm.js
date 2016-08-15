@@ -53,6 +53,7 @@ define([
         forgotPasswordLinkNode: null,
         usernameLabelNode: null,
         passwordLabelNode: null,
+        mfCheckToken: null, 
 
         // Parameters configured in the Modeler.
         /**
@@ -99,6 +100,7 @@ define([
         _startTime: null,
         _userInput : null,
         _passInput : null,
+        _context: null, 
         _widgetId: null,
         _captionShow : "",
         _captionHide : "",
@@ -130,6 +132,11 @@ define([
             this._updateRendering();
             this._setupEvents();
         },
+        
+        update: function (object, callback) {
+            this._context = object;
+            callback();
+         },
         // Rerender the interface.
         _updateRendering: function () {
             logger.debug(this.id + "._updateRendering");
@@ -410,6 +417,20 @@ define([
             if (typeof grecaptcha !== 'undefined') {
                 try {
                     this._widgetId = grecaptcha.render(this.id + "-recaptcha", {'sitekey' : '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',  "callback": dojoLang.hitch(this,function(response){
+                        this._context.set(this.responseTokenAttribute, response);
+                        mx.data.action({
+                            params: {
+                                applyto: 'selection',
+                                actionname: this.mfCheckToken,
+                                guids:[this._context.getGuid()]
+                            },
+                            callback: dojoLang.hitch(this function(obj){
+                                console.log("success");
+                            }),
+                            error: dojoLang.hitch(this, function(error){
+                                console.log("failed mf");
+                            })
+                        }, this);
                     // store response token in entity for server side validation
                     console.log(response);
                     })});

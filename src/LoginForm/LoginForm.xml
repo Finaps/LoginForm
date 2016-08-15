@@ -1,4 +1,4 @@
-<widget id="LoginForm.widget.LoginForm" needsEntityContext="false"
+<widget id="LoginForm.widget.LoginForm" needsEntityContext="true"
         xmlns="http://www.mendix.com/widget/1.0/"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.mendix.com/widget/1.0/ ../../xsd/widget.xsd">
@@ -140,6 +140,12 @@
                 <enumerationValue key="tel">Telephone Number</enumerationValue>
                 <enumerationValue key="number">Number</enumerationValue>
             </enumerationValues>
+        </property>
+        <property key="mfCheckToken" type="microflow" required="false" defaultValue="">
+            <caption>Recaptcha check flow</caption>
+            <category>Recaptcha</category>
+            <description></description>
+            <returnType type="Boolean" />
         </property>
     </properties>
 </widget>
