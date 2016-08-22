@@ -53,7 +53,11 @@ define([
         forgotPasswordLinkNode: null,
         usernameLabelNode: null,
         passwordLabelNode: null,
+		
+		// Recaptcha Token items
         mfCheckToken: null,
+		responseTokenAttribute: null,
+		
 
         // Parameters configured in the Modeler.
         /**
@@ -127,7 +131,6 @@ define([
         
         postCreate: function () {
             logger.debug(this.id + ".postCreate");
-            this._addRecaptcha();
             this._getI18NMap();
             this._updateRendering();
             this._setupEvents();
@@ -235,6 +238,9 @@ define([
                 }
                 this._loginForm_FailedAttempts = this._loginForm_FailedAttempts + 1;
             }
+			if (this._loginForm_FailedAttempts >= 3) {
+				this._addRecaptcha();
+			}
 
             dojoHtml.set(this.alertMessageNode, message);
             domClass.remove(this.alertMessageNode, "hidden");
@@ -432,10 +438,10 @@ define([
                             })
                         }, this);
                     // store response token in entity for server side validation
-                    console.log(response);
+						console.log(response);
                     })});
                     window._grecaptcha_widgets.push(this._widgetId);
-                } catch(e) {
+                } catch (e) {
                     console.error("Failed to render recaptcha widget: " + e.message);
                 }
             } else {

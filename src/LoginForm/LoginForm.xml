@@ -147,5 +147,14 @@
             <description></description>
             <returnType type="Boolean" />
         </property>
+		    <property key="responseTokenAttribute" type="attribute" required="true">
+            <caption>Recaptcha response attribute</caption>
+            <category>Recaptcha</category>
+            <description>Attribute to place response</description>
+			<attributeTypes>
+				 <attributeType name="String" />
+			</attributeTypes>
+        </property>
     </properties>
 </widget>
+
