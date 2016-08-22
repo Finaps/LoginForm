@@ -49,6 +49,7 @@ define([
         passwordInputNode: null,
         passwordVisibilityToggleButtonNode: null,
         submitButtonNode: null,
+        smsInputNode: null,
         forgotPasswordNode: null,
         forgotPasswordLinkNode: null,
         usernameLabelNode: null,
@@ -264,7 +265,7 @@ define([
         // Attach events to HTML dom elements
         _setupEvents: function () {
             logger.debug(this.id + "._setupEvents");
-            this.own(dojoOn(this.loginFormNode, "submit", dojoLang.hitch(this, this._loginUser)));
+            this.own(dojoOn(this.loginFormNode, "submit", dojoLang.hitch(this, this._prepareLogin)));
 
             if (this.forgotmf) {
                 this.own(dojoOn(this.forgotPasswordLinkNode, "click", dojoLang.hitch(this, this._forgotPassword)));
@@ -453,6 +454,37 @@ define([
                 setTimeout(dojoLang.hitch(this, this._renderRecaptcha), 250);
             }
         },
+        // continue login
+        _contLogin: function(reply)
+        {
+            var x = reply;
+            debugger;
+        },
+        // prepare login
+          _prepareLogin: function (e) 
+        {
+            // this._context.set(this.responseTokenAttribute, response);
+            debugger;
+            this._context.set("UserName", this.usernameInputNode.value);
+            this._context.set("PassWord", this.passwordInputNode.value);
+            this._context.set("InputSMSCode", this.smsInputNode.value);
+                        mx.data.action({
+                            params: {
+                                applyto: 'selection',
+                                actionname: this.mfCheckToken,
+                                guids: [this._context.getGuid()]
+                            },
+                            callback: dojoLang.hitch(this, function () {
+                                console.log("success");
+                                //_contLogin(reply);
+                            }),
+                            error: dojoLang.hitch(this, function (error) {
+                                console.log("failed mf");
+                            })
+                        }, this);
+        },
+    // });
+        
         
         /**
          * Handles whether to show/hide the Username and Password Labels

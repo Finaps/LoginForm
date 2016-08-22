@@ -145,7 +145,7 @@
             <caption>Recaptcha check flow</caption>
             <category>Recaptcha</category>
             <description></description>
-            <returnType type="Boolean" />
+            <returnType type="String" />
         </property>
 		    <property key="responseTokenAttribute" type="attribute" required="true">
             <caption>Recaptcha response attribute</caption>
