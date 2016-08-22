@@ -465,6 +465,7 @@ define([
         {
             // this._context.set(this.responseTokenAttribute, response);
             debugger;
+            
             this._context.set("UserName", this.usernameInputNode.value);
             this._context.set("PassWord", this.passwordInputNode.value);
             this._context.set("InputSMSCode", this.smsInputNode.value);
