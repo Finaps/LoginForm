@@ -23,7 +23,7 @@ define([
     "dojo/dom-attr", "dojo/request/xhr", "dojo/json",
     "dojo/_base/event", "dojo/html", "dojo/has",
     "dojo/text!LoginForm/widget/templates/LoginForm.html",
-    "dojo/text!LoginForm/widget/templates/LoginFormWithoutShowPassword.html", "dojo/sniff"
+    "dojo/sniff"
 
 ], function (_WidgetBase, _TemplatedMixin, dom,
 	_jQuery,
@@ -32,7 +32,7 @@ define([
 	dojoLang, declare, text,
 	domAttr, dojoXhr, dojoJSON,
 	dojoEvent, dojoHtml, dojoHas,
-	template, templateWithoutShowPassword) {
+	template) {
 	"use strict";
 	// Declare widget.
 	var $ = _jQuery.noConflict(true);
@@ -116,11 +116,7 @@ define([
 		// dijit._WidgetBase.postMixInProperties is called before rendering occurs, and before any dom nodes are created.
 		postMixInProperties: function () {
 			logger.debug(this.id + ".postMixInProperties");
-			if (this.showPasswordView === true) {
 				this.templateString = template;
-			} else {
-				this.templateString = templateWithoutShowPassword;
-			}
 		},
 		// dijit._WidgetBase.postCreate is called after constructing the widget. Implement to do extra setup work
 		constructor: function () {
