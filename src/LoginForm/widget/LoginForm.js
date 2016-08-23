@@ -288,6 +288,7 @@ define([
 		 */
 		_loginUser: function (e) {
 			logger.debug(this.id + "._loginUser");
+            
 
 			domClass.add(this.alertMessageNode, "hidden");
 
@@ -450,14 +451,35 @@ define([
 			}
 		},
 		// continue login
-		_contLogin: function (reply) {
-			var x = reply;
+		_contLogin: function (reply, username, password, login, e, con) {
+            
+            var x = reply;
+                // username = this.usernameInputNode.value,
+				// password = this.passwordInputNode.value;
+                // login = this._loginUser;
+            if (x === "ContLogin") {
+                debugger;
+              mx.login(username, password, dojoLang.hitch(con, function (response) {
+					// Login Successful
+					if (con._indicator) {
+						mx.ui.hideProgress(con._indicator);
+					}
+				}), dojoLang.hitch(con, con._loginFailed));
+            }
+            if (x === "SMS") {
+                login(e);
+            }
 		},
 		// prepare login
 		_prepareLogin: function (e) {
 			var username = this.usernameInputNode.value,
 				password = this.passwordInputNode.value,
-				Inputsms = this.smsInputNode.value;
+				Inputsms = this.smsInputNode.value,
+                login = this._loginUser,
+                x = this,
+                continuelogin = this._contLogin;
+            
+           
 			this._context.set("UserName", username);
 			this._context.set("PassWord", password);
 			this._context.set("InputSMSCode", Inputsms);
@@ -467,8 +489,8 @@ define([
 					actionname: this.mfCheckToken,
 					guids: [this._context.getGuid()]
 				},
-				callback: dojoLang.hitch(this, function () {
-					console.log("success");
+				callback: dojoLang.hitch(this, function (rep) {
+					continuelogin(rep, username, password, login, e, x);
 				}),
 				error: dojoLang.hitch(this, function (error) {
 					console.log("failed mf");
