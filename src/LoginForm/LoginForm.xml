@@ -115,6 +115,11 @@
 				 <attributeType name="String" />
 			</attributeTypes>
         </property>
+		<property key="recaptchaKey" type="string" required="true" defaultValue="6Lf3oScTAAAAAGVAdNUdmHLYZn-05maaSMa9fZxN">
+            <caption>Recaptcha Site Key</caption>
+            <category>Recaptcha</category>
+            <description>Site key of Recaptcha</description>
+        </property>
     </properties>
 </widget>
 

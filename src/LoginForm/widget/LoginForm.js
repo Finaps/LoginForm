@@ -49,6 +49,7 @@ define([
 		passwordVisibilityToggleButtonNode: null,
 		submitButtonNode: null,
 		smsInputNode: null,
+		recaptchaKey: null,
 		usernameLabelNode: null,
 		passwordLabelNode: null,
 		LoginButtonContainerNode: null,
@@ -189,6 +190,11 @@ define([
 			logger.warn("Login has failed");
 			dojoHtml.set(this.alertMessageNode, "Inloggen mislukt");
 			domClass.remove(this.alertMessageNode, "hidden");
+			//reset recaptcha
+			if (this._widgetId !== null) {
+				this._widgetId = grecaptcha.reset(this._widgetId);
+			}
+
 		},
 		/**
 		 * Retrieves the matching value from the internationalization object
@@ -314,7 +320,7 @@ define([
 						"async": "true",
 						"defer": "true"
 					});
-					domConstruct.place(this._googleRecaptchaApiScript, dojoQuery("head")[0]);					
+					domConstruct.place(this._googleRecaptchaApiScript, dojoQuery("head")[0]);
 				} catch (e) {
 					console.error("Failed to include Google Recaptcha script tag: " + e.message);
 				}
@@ -322,42 +328,33 @@ define([
 		},
 
 		_renderRecaptcha: function () {
-			this._startTime = new Date().getTime();
-			if (typeof grecaptcha !== 'undefined') {
-				try {
-					this._widgetId = grecaptcha.render(this.id + "-recaptcha", {
-						'sitekey': '6Lf3oScTAAAAAGVAdNUdmHLYZn-05maaSMa9fZxN',
-						"callback": dojoLang.hitch(this, function (response) {
-							this._context.set(this.responseTokenAttribute, response);
-							mx.data.action({
-								params: {
-									applyto: 'selection',
-									actionname: this.mfCheckToken,
-									guids: [this._context.getGuid()]
-								},
-								callback: dojoLang.hitch(this, function (obj) {
-									console.log("success");
-								}),
-								error: dojoLang.hitch(this, function (error) {
-									console.log("failed mf");
-								})
-							}, this);
-							// store response token in entity for server side validation
-							console.log(response);
-						})
-					});
-					
-					window._grecaptcha_widgets.push(this._widgetId);
-				} catch (e) {
-					console.error("Failed to render recaptcha widget: " + e.message);
-				}
+			if (this._widgetId !== null) {
+				this._widgetId = grecaptcha.reset(this._widgetId);
 			} else {
-				var duration = new Date().getTime() - this._startTime;
-				if (duration > 15000) {
-					console.warn("Recaptcha widget " + this.id + " timeout, grecaptcha is undefined.");
-					return;
+				this._startTime = new Date().getTime();
+				if (typeof grecaptcha !== 'undefined') {
+					try {
+						this._widgetId = grecaptcha.render(this.id + "-recaptcha", {
+							'sitekey': this.recaptchaKey,
+							"callback": dojoLang.hitch(this, function (response) {
+								this._context.set(this.responseTokenAttribute, response);
+								// store response token in entity for server side validation
+								console.log(response);
+							})
+						});
+
+						window._grecaptcha_widgets.push(this._widgetId);
+					} catch (e) {
+						console.error("Failed to render recaptcha widget: " + e.message);
+					}
+				} else {
+					var duration = new Date().getTime() - this._startTime;
+					if (duration > 15000) {
+						console.warn("Recaptcha widget " + this.id + " timeout, grecaptcha is undefined.");
+						return;
+					}
+					setTimeout(dojoLang.hitch(this, this._renderRecaptcha), 250);
 				}
-				setTimeout(dojoLang.hitch(this, this._renderRecaptcha), 250);
 			}
 		},
 		// continue login
@@ -367,12 +364,14 @@ define([
 			} else if (reply === "SMS") {
 				$('.smsContainer').removeClass('hidden');
 				$('.messagePane').addClass('hidden');
+				domClass.add(this.alertMessageNode, "hidden");
 			} else if (reply === "Recaptcha") {
 				this._renderRecaptcha();
 			} else if (reply === "LoginFailed") {
 				this._loginFailed();
+
 			}
-			// else nothing
+
 		},
 		// prepare login
 		_prepareLogin: function (e) {
