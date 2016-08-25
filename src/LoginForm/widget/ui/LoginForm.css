@@ -5,3 +5,9 @@
 .login-form-widget .toggle span {
     padding-left: 5px;
 }
+
+.recaptcha > div {
+	display: block;
+    margin-right: auto;
+    margin-left: auto;
+}

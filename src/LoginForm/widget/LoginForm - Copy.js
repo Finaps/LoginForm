@@ -100,7 +100,6 @@ define([
 		_indicator: null,
 		_i18nmap: null,
 		_setup: false,
-		_startTime: null,
 		_loginForm_FailedAttempts: 0,
 		// dijit._WidgetBase.postMixInProperties is called before rendering occurs, and before any dom nodes are created.
 		postMixInProperties: function () {
@@ -119,7 +118,6 @@ define([
 			logger.debug(this.id + ".postCreate");
 			this._getI18NMap();
 			this._updateRendering();
-			this._addRecaptcha();
 			this._setupEvents();
 		},
 
@@ -301,8 +299,7 @@ define([
 
 		_addRecaptcha: function () {
 			this._recaptchaNode = domConstruct.create("div", {
-				"id": this.id + "-recaptcha",
-				"class": "recaptcha"
+				"id": this.id + "-recaptcha"
 			});
 			domConstruct.place(this._recaptchaNode, this.id);
 
@@ -314,7 +311,8 @@ define([
 						"async": "true",
 						"defer": "true"
 					});
-					domConstruct.place(this._googleRecaptchaApiScript, dojoQuery("head")[0]);					
+					domConstruct.place(this._googleRecaptchaApiScript, dojoQuery("head")[0]);
+					this._renderRecaptcha();
 				} catch (e) {
 					console.error("Failed to include Google Recaptcha script tag: " + e.message);
 				}
@@ -322,42 +320,21 @@ define([
 		},
 
 		_renderRecaptcha: function () {
-			this._startTime = new Date().getTime();
-			if (typeof grecaptcha !== 'undefined') {
-				try {
-					this._widgetId = grecaptcha.render(this.id + "-recaptcha", {
-						'sitekey': '6Lf3oScTAAAAAGVAdNUdmHLYZn-05maaSMa9fZxN',
-						"callback": dojoLang.hitch(this, function (response) {
-							this._context.set(this.responseTokenAttribute, response);
-							mx.data.action({
-								params: {
-									applyto: 'selection',
-									actionname: this.mfCheckToken,
-									guids: [this._context.getGuid()]
-								},
-								callback: dojoLang.hitch(this, function (obj) {
-									console.log("success");
-								}),
-								error: dojoLang.hitch(this, function (error) {
-									console.log("failed mf");
-								})
-							}, this);
-							// store response token in entity for server side validation
-							console.log(response);
-						})
-					});
-					
-					window._grecaptcha_widgets.push(this._widgetId);
-				} catch (e) {
-					console.error("Failed to render recaptcha widget: " + e.message);
-				}
-			} else {
-				var duration = new Date().getTime() - this._startTime;
-				if (duration > 15000) {
-					console.warn("Recaptcha widget " + this.id + " timeout, grecaptcha is undefined.");
-					return;
-				}
-				setTimeout(dojoLang.hitch(this, this._renderRecaptcha), 250);
+			if (typeof window._grecaptcha_widgets === "undefined") {
+				window._grecaptcha_widgets = [];
+			}
+			try {
+				this._widgetId = grecaptcha.render(this.id + "-recaptcha", {
+					'sitekey': '6Lf3oScTAAAAAGVAdNUdmHLYZn-05maaSMa9fZxN',
+					"callback": dojoLang.hitch(this, function (response) {
+						this._context._set(this.responseTokenAttribute, response);
+						// store response token in entity for server side validation
+						console.log(response);
+					})
+				});
+				window._grecaptcha_widgets.push(this._widgetId);
+			} catch (e) {
+				console.error("Failed to render recaptcha widget: " + e.message);
 			}
 		},
 		// continue login

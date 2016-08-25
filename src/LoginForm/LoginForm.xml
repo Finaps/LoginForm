@@ -29,23 +29,13 @@
             <category>Display</category>
             <description>Input box sample value</description>
         </property>
-        <property key="showLabels" type="boolean" defaultValue="false">
-            <caption>Show Labels</caption>
-            <category>Display</category>
-            <description>Show username and password labels</description>
-        </property>
-        <property key="usernameLabel" type="string" defaultValue="User name" required="false">
-            <caption>Username Label</caption>
-            <category>Display</category>
-            <description>Username label caption (Only used if Show Labels is Yes)</description>
-        </property>
-        <property key="passwordLabel" type="string" defaultValue="Password" required="false">
-            <caption>Password Label</caption>
-            <category>Display</category>
-            <description>Password label caption (Only used if Show Labels is Yes)</description>
-        </property>
         <property key="logintext" type="string" defaultValue="Login">
             <caption>Login Button Caption</caption>
+            <category>Display</category>
+            <description>Login button caption</description>
+        </property>
+		<property key="codetext" type="string" defaultValue="Sms code">
+            <caption>SMS code tekst</caption>
             <category>Display</category>
             <description>Login button caption</description>
         </property>
@@ -53,33 +43,12 @@
             <caption>Empty Username or Password Text</caption>
             <category>Display</category>
             <description>Displayed when Username or Password is empty</description>
-        </property>
-        <property key="forgottext" type="string" required="false" defaultValue="Forgot your password?">
-            <caption>Forgot Password Link Text</caption>
-            <category>Display</category>
-            <description>Text in Forgot Password link</description>
-        </property>
+        </property>        
         <property key="showprogress" type="boolean" defaultValue="false">
             <caption>Show Progress Bar</caption>
             <category>Behavior</category>
             <description>Display a progress bar while signing in</description>
-        </property>
-        <property key="showLoginFailureWarning" type="boolean" defaultValue="false">
-            <caption>Login Failure Warning</caption>
-            <category>Behavior</category>
-            <description>Alert that username will be blocked for 5 minutes if login fails 3 times</description>
-        </property>
-        <property key="loginFailureText" type="string" defaultValue="Your account will be blocked for 5 minutes if login with the same username fails thrice!">
-            <caption>Login Failure Text</caption>
-            <category>Behavior</category>
-            <description>Warning message to show when login fails twice</description>
-        </property>
-        <property key="forgotmf" type="microflow" required="false">
-            <caption>Forgot Password Microflow</caption>
-            <category>Behavior</category>
-            <description>Triggered on clicking the Forgot Password link</description>
-            <returnType type="Void"/>
-        </property>
+        </property>        
         <property key="dofocus" type="boolean" defaultValue="false">
             <caption>Focus Username Input Field</caption>
             <category>Behavior</category>
@@ -110,16 +79,7 @@
             <category>Password</category>
             <description>Optional image to be displayed on Mask Password button.</description>
         </property>
-        <property key="convertCase" type="enumeration" defaultValue="none">
-            <caption>Convert to lowercase/uppercase</caption>
-            <category>Casehandling</category>
-            <description>Automatic conversion of Username to lowercase/uppercase</description>
-            <enumerationValues>
-                <enumerationValue key="none">None</enumerationValue>
-                <enumerationValue key="toLowerCase">Convert to lowercase</enumerationValue>
-                <enumerationValue key="toUpperCase">Convert to uppercase</enumerationValue>
-            </enumerationValues>
-        </property>
+
         <property key="autoCorrect" type="boolean" defaultValue="false">
             <caption>Auto-correct</caption>
             <category>Mobile</category>
@@ -142,8 +102,8 @@
             </enumerationValues>
         </property>
         <property key="mfCheckToken" type="microflow" required="false" defaultValue="">
-            <caption>Recaptcha check flow</caption>
-            <category>Recaptcha</category>
+            <caption>Two Factor start flow</caption>
+            <category>Behavior</category>
             <description></description>
             <returnType type="String" />
         </property>
