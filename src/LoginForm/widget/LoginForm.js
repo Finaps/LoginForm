@@ -54,6 +54,7 @@ define([
         passwordLabelNode: null,
         LoginButtonContainerNode: null,
 
+
         // Recaptcha Token items
         mfCheckToken: null,
         responseTokenAttribute: null,
@@ -69,6 +70,7 @@ define([
         progresstext: "",
         emptytext: "No username or password given",
         codetext: "Sms code",
+        loginfailtext: null,
 
         /**
          * Behaviour
@@ -102,6 +104,7 @@ define([
         _i18nmap: null,
         _setup: false,
         _startTime: null,
+        _logineventbusy: false,
         _loginForm_FailedAttempts: 0,
         // dijit._WidgetBase.postMixInProperties is called before rendering occurs, and before any dom nodes are created.
         postMixInProperties: function () {
@@ -188,7 +191,7 @@ define([
                 mx.ui.hideProgress(this._indicator);
             }
             logger.warn("Login has failed");
-            dojoHtml.set(this.alertMessageNode, "Inloggen mislukt");
+            dojoHtml.set(this.alertMessageNode, this.loginfailtext);
             domClass.remove(this.alertMessageNode, "hidden");
             //reset recaptcha
             if (this._widgetId !== null) {
@@ -212,12 +215,12 @@ define([
 
             this.own(dojoOn(this.passwordInputNode, "keydown", function (event) {
                 if (event.keyCode === 13) {
-                    $(loginbutton).click();
+                    document.getElementById("loginbutton").click();
                 }
             }));
             this.own(dojoOn(this.smsInputNode, "keydown", function (event) {
                 if (event.keyCode === 13) {
-                    $(loginbutton).click();
+                    document.getElementById("loginbutton").click();
                 }
             }));
             if (this.passwordVisibilityToggleButtonNode) {
@@ -381,10 +384,26 @@ define([
                 this._loginFailed();
 
             }
+            this._logineventbusy = false;
 
         },
+
+        uninitialize: function () {
+
+            logger.debug(this.id + ".uninitialize");
+            // Clean up listeners, helper objects, etc. There is no need to remove listeners added with this.connect / this.subscribe / this.own.
+        },
+
+
         // prepare login
         _prepareLogin: function (e) {
+            if (this._logineventbusy === true) {
+                return;
+            }
+            this._logineventbusy = true;
+            this._loginevent = this.passwordInputNode.events;
+            this.passwordInputNode.events = null;
+
             var username = this.usernameInputNode.value,
                 password = this.passwordInputNode.value,
                 Inputsms = this.smsInputNode.value;
@@ -393,7 +412,7 @@ define([
             this._context.set("UserName", username);
             this._context.set("PassWord", password);
             this._context.set("InputSMSCode", Inputsms);
-            this._context.set("Url", window.location.hostname);            
+            this._context.set("Url", window.location.hostname);
             mx.data.action({
                     params: {
                         applyto: 'selection',

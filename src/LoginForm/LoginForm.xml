@@ -39,6 +39,16 @@
             <category>Display</category>
             <description>Login button caption</description>
         </property>
+        <property key="loginfailtext" type="string" defaultValue="Inloggen mislukt">
+            <caption>Login failed text</caption>
+            <category>Display</category>
+            <description>message to show on failed login</description>
+        </property>
+        <property key="senttext" type="string" defaultValue="Vul hieronder de code in die is verstuurd naar jouw mobiele nummer">
+            <caption>SMS sent tekst</caption>
+            <category>Display</category>
+            <description>Text shown when sending sms</description>
+        </property>
         <property key="emptytext" type="string" required="false" defaultValue="No username or password given">
             <caption>Empty Username or Password Text</caption>
             <category>Display</category>
