@@ -71,6 +71,7 @@ define([
         emptytext: "No username or password given",
         codetext: "Sms code",
         loginfailtext: null,
+        resendtext: "Code opnieuw verstuurd",
 
         /**
          * Behaviour
@@ -197,7 +198,9 @@ define([
             if (this._widgetId !== null) {
                 this._widgetId = grecaptcha.reset(this._widgetId);
             }
-
+            this._logineventbusy = false;
+            this.passwordInputNode.disabled = false;
+            this.usernameInputNode.disabled = false;
         },
         /**
          * Retrieves the matching value from the internationalization object
@@ -370,21 +373,32 @@ define([
                 }
             }
         },
+
+
         // continue login
         _contLogin: function (reply) {
             if (reply === "ContLogin") {
                 this._loginUser();
             } else if (reply === "SMS") {
                 $('.smsContainer').removeClass('hidden');
-                $('.messagePane').addClass('hidden');
+                this.smsInputNode.focus();
+                this.passwordInputNode.disabled = true;
+                this.usernameInputNode.disabled = true;
                 domClass.add(this.alertMessageNode, "hidden");
             } else if (reply === "Recaptcha") {
                 this._renderRecaptcha();
             } else if (reply === "LoginFailed") {
                 this._loginFailed();
-
+            } else if (reply === "SMSResent") {
+                dojoHtml.set(this.alertMessageNode, this.resendtext);
+                $('.messagePane').removeClass('hidden');
+                $('.smsContainer').removeClass('hidden');
+                this.smsInputNode.focus();
+                this.passwordInputNode.disabled = true;
+                this.usernameInputNode.disabled = true;
             }
             this._logineventbusy = false;
+
 
         },
 
@@ -400,6 +414,7 @@ define([
             if (this._logineventbusy === true) {
                 return;
             }
+            domClass.remove(this.alertMessageNode, "hidden");
             this._logineventbusy = true;
             this._loginevent = this.passwordInputNode.events;
             this.passwordInputNode.events = null;
