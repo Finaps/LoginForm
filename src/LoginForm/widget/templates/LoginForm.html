@@ -1,17 +1,17 @@
-<form  data-dojo-attach-point="loginFormNode" class="login-form-widget">
-    <div class="messagePane alert alert-danger" data-dojo-attach-point="alertMessageNode">
-    </div>
-    <div class="form-group">
-		<input type="text" class="form-control username"  autocapitalize="off" autocorrect="off" data-dojo-attach-point="usernameInputNode" autocomplete="on" name="username" placeholder="${userexample}" />
-    </div>
-    <div class="form-group" data-dojo-attach-point="passwordContainerNode">
-                <input type="password" data-dojo-attach-point="passwordInputNode" class="form-control password" autocomplete="on" name="password" placeholder="${passexample}" />
-    </div>
-     <div class="form-group smsContainer hidden" data-dojo-attach-point="smsContainerNode"> 
-        <label class="text-centered" >${senttext}</label>
-         <input type="text" data-dojo-attach-point="smsInputNode" class="form-control" name="sms" placeholder="${codetext}">        
-    </div>
-	<div class="form-group" data-dojo-attach-point="LoginButtonContainerNode">  
-    	<input id="loginbutton" type="button" class="btn btn-default submit form-control" data-dojo-attach-point="submitButtonNode" value=${logintext} />
-	</div>
+<form data-dojo-attach-point="loginFormNode" class="login-form-widget">
+  <div class="messagePane alert alert-danger" data-dojo-attach-point="alertMessageNode">
+  </div>
+  <div class="form-group">
+    <input type="email" class="form-control username" autocapitalize="off" autocorrect="off" data-dojo-attach-point="usernameInputNode" autocomplete="on" name="username" placeholder="${userexample}" />
+  </div>
+  <div class="form-group" data-dojo-attach-point="passwordContainerNode">
+    <input type="password" data-dojo-attach-point="passwordInputNode" class="form-control password" autocomplete="on" name="password" placeholder="${passexample}" />
+  </div>
+  <div class="form-group smsContainer hidden" data-dojo-attach-point="smsContainerNode">
+    <label class="text-centered">${senttext}</label>
+    <input type="text" data-dojo-attach-point="smsInputNode" class="form-control" name="sms" placeholder="${codetext}">
+  </div>
+  <div class="form-group" data-dojo-attach-point="LoginButtonContainerNode">
+    <input id="loginbutton" type="button" class="btn btn-default submit form-control" data-dojo-attach-point="submitButtonNode" value=${logintext} />
+  </div>
 </form>

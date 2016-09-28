@@ -109,7 +109,6 @@ define([
         _loginForm_FailedAttempts: 0,
         // dijit._WidgetBase.postMixInProperties is called before rendering occurs, and before any dom nodes are created.
         postMixInProperties: function () {
-            logger.debug(this.id + ".postMixInProperties");
             this.templateString = template;
         },
         // dijit._WidgetBase.postCreate is called after constructing the widget. Implement to do extra setup work
@@ -121,20 +120,27 @@ define([
         },
 
         postCreate: function () {
-            logger.debug(this.id + ".postCreate");
             this._getI18NMap();
             this._updateRendering();
             this._addRecaptcha();
             this._setupEvents();
+           
         },
 
         update: function (object, callback) {
-            this._context = object;
-            callback();
-        },
+           this._context = object;
+           this._context.set("Url", mx.baseUrl.replace('xas/', ''));
+           mx.data.commit({
+               mxobj: object,
+               callback: function () {
+               },
+               error: function (e) {
+               }
+           });
+           callback();
+       },
         // Rerender the interface.
         _updateRendering: function () {
-            logger.debug(this.id + "._updateRendering");
             domClass.add(this.alertMessageNode, "hidden");
             this._addMobileOptions();
             this._setUsernameInputAttributes();
@@ -186,12 +192,10 @@ define([
          * @private
          */
         _loginFailed: function () {
-            logger.debug(this.id + "._loginFailed");
 
             if (this._indicator) {
                 mx.ui.hideProgress(this._indicator);
             }
-            logger.warn("Login has failed");
             dojoHtml.set(this.alertMessageNode, this.loginfailtext);
             domClass.remove(this.alertMessageNode, "hidden");
             //reset recaptcha
@@ -213,7 +217,6 @@ define([
 
         // Attach events to HTML dom elements
         _setupEvents: function () {
-            logger.debug(this.id + "._setupEvents");
             this.own(dojoOn(this.LoginButtonContainerNode, "click", dojoLang.hitch(this, this._prepareLogin)));
 
             this.own(dojoOn(this.passwordInputNode, "keydown", function (event) {
@@ -242,7 +245,6 @@ define([
          * @private
          */
         _loginUser: function (e) {
-            logger.debug(this.id + "._loginUser");
 
 
             domClass.add(this.alertMessageNode, "hidden");
@@ -256,7 +258,6 @@ define([
 
             if (username && password) {
                 if (this.showprogress) {
-                    logger.debug("Showing Progress!!");
                     this._indicator = mx.ui.showProgress();
                 }
 
@@ -291,14 +292,12 @@ define([
          * @private
          */
         _getI18NMap: function () {
-            logger.debug(this.id + "._getI18NMap");
             if (!window.i18n) {
                 dojoXhr(mx.appUrl + "js/login_i18n.js", {
                     handleAs: "javascript"
                 }).then(dojoLang.hitch(this, function (data) {
                     this._i18nmap = window.i18nMap;
                 }), dojoLang.hitch(this, function (err) {
-                    logger.debug(this.id + "._getI18Map: Failed to get i18NMap!", err);
                 }));
             }
         },
@@ -307,7 +306,6 @@ define([
          * @private
          */
         _focusNode: function () {
-            logger.debug(this.id + "._focusNode");
             //Even with timeout set to 0, function code is made asynchronous
             setTimeout(dojoLang.hitch(this, this.usernameInputNode.focus()), 0);
         },
@@ -338,7 +336,6 @@ define([
                     });
                     domConstruct.place(this._googleRecaptchaApiScript, dojoQuery("head")[0]);
                 } catch (e) {
-                    console.error("Failed to include Google Recaptcha script tag: " + e.message);
                 }
             }
         },
@@ -361,7 +358,6 @@ define([
 
                         window._grecaptcha_widgets.push(this._widgetId);
                     } catch (e) {
-                        console.error("Failed to render recaptcha widget: " + e.message);
                     }
                 } else {
                     var duration = new Date().getTime() - this._startTime;
@@ -403,8 +399,6 @@ define([
         },
 
         uninitialize: function () {
-
-            logger.debug(this.id + ".uninitialize");
             // Clean up listeners, helper objects, etc. There is no need to remove listeners added with this.connect / this.subscribe / this.own.
         },
 
@@ -427,7 +421,7 @@ define([
             this._context.set("UserName", username);
             this._context.set("PassWord", password);
             this._context.set("InputSMSCode", Inputsms);
-            this._context.set("Url", window.location.hostname);
+            this._context.set("Url", mx.baseUrl.replace('xas/','')); // was 'window.location.hostname' but this didn't work with phonegap
             mx.data.action({
                     params: {
                         applyto: 'selection',
