@@ -49,7 +49,7 @@ define([
         passwordVisibilityToggleButtonNode: null,
         submitButtonNode: null,
         smsInputNode: null,
-        recaptchaKey: null,
+//        recaptchaKey: null,
         usernameLabelNode: null,
         passwordLabelNode: null,
         LoginButtonContainerNode: null,
@@ -58,6 +58,7 @@ define([
         // Recaptcha Token items
         mfCheckToken: null,
         responseTokenAttribute: null,
+        siteKey: null,
 
 
         // Parameters configured in the Modeler.
@@ -137,6 +138,27 @@ define([
                error: function (e) {
                }
            });
+            
+              // get sitekey from microflow
+            if (this.mfGetSiteKey !== "" && this.siteKeyAttribute !== "") {
+                mx.data.action({
+                    params: {
+                        applyto: 'selection',
+                        actionname: this.mfGetSiteKey,
+                        guids: [this._context.getGuid()]
+                    },
+                    callback: dojoLang.hitch(this,function(obj){
+                        if (obj) {
+                            this.siteKey = obj[0].jsonData.attributes[this.siteKeyAttribute].value;
+                        }                        
+                    }),
+                    error: dojoLang.hitch(this,function(error){
+                        console.log(this.id + ': An error occurred while executing microflow: ' + error.description);
+                    })
+                }, this);
+            } else {
+                setTimeout(dojoLang.hitch(this,this._grecaptchaRender),100);
+            }
            callback();
        },
         // Rerender the interface.
@@ -348,7 +370,7 @@ define([
                 if (typeof grecaptcha !== 'undefined') {
                     try {
                         this._widgetId = grecaptcha.render(this.id + "-recaptcha", {
-                            'sitekey': this.recaptchaKey,
+                            'sitekey': this.siteKey,
                             "callback": dojoLang.hitch(this, function (response) {
                                 this._context.set(this.responseTokenAttribute, response);
                                 // store response token in entity for server side validation

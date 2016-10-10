@@ -130,10 +130,31 @@
 				 <attributeType name="String" />
 			</attributeTypes>
         </property>
+<!--
 		<property key="recaptchaKey" type="string" required="true" defaultValue="6Lf3oScTAAAAAGVAdNUdmHLYZn-05maaSMa9fZxN">
             <caption>Recaptcha Site Key</caption>
             <category>Recaptcha</category>
             <description>Site key of Recaptcha</description>
+        </property>
+-->
+        <property key="siteKeyEntity" type="entity" allowNonPersistableEntities="true" required="false" defaultValue="">
+            <caption>Sitekey Entity</caption>
+            <category>Sitekey</category>
+            <description></description>
+        </property>
+        <property key="siteKeyAttribute" type="attribute" entityProperty="siteKeyEntity" required="false" defaultValue="">
+            <caption>Sitekey attribute</caption>
+            <category>Sitekey</category>
+            <description></description>
+            <attributeTypes>
+                <attributeType name="String" />
+            </attributeTypes>
+        </property>
+        <property key="mfGetSiteKey" type="microflow" required="false" defaultValue="">
+            <caption>Sitekey Microflow</caption>
+            <category>Sitekey</category>
+            <description></description>
+            <returnType type="Object" entityProperty="siteKeyEntity" />
         </property>
     </properties>
 </widget>
