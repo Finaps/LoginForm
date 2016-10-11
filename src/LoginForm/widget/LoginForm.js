@@ -59,6 +59,9 @@ define([
         mfCheckToken: null,
         responseTokenAttribute: null,
         siteKey: null,
+        mfGetSiteKey: null,
+        siteKeyAttribute: null,
+        siteKeyEntity: null,
 
 
         // Parameters configured in the Modeler.
@@ -131,6 +134,15 @@ define([
         update: function (object, callback) {
            this._context = object;
            this._context.set("Url", mx.baseUrl.replace('xas/', ''));
+            try{
+                this._context.set("Platform", device.platform);
+                this._context.set("Version", device.version);
+                this._context.set("DeviceName", device.model);
+                this._context.set("IdMobile", device.uuid);
+            } 
+            catch(err){
+                console.log(err);
+            }
            mx.data.commit({
                mxobj: object,
                callback: function () {
