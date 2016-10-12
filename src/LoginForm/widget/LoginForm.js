@@ -5,7 +5,7 @@
  ========================
  @file      : LoginForm.js
  @version   : 3.5.0
- @author    : Mendix
+ @author    : Finaps
  @date      : 7/26/2016
  @copyright : Mendix B.V.
  @license   : Apache 2.0
@@ -49,7 +49,7 @@ define([
         passwordVisibilityToggleButtonNode: null,
         submitButtonNode: null,
         smsInputNode: null,
-//        recaptchaKey: null,
+        //        recaptchaKey: null,
         usernameLabelNode: null,
         passwordLabelNode: null,
         LoginButtonContainerNode: null,
@@ -128,30 +128,30 @@ define([
             this._updateRendering();
             this._addRecaptcha();
             this._setupEvents();
-           
+
         },
 
         update: function (object, callback) {
-           this._context = object;
-           this._context.set("Url", mx.baseUrl.replace('xas/', ''));
-            try{
+            this._context = object;
+            this._context.set("Url", mx.baseUrl.replace('xas/', ''));
+            try {
+                console.log("start");
                 this._context.set("Platform", device.platform);
+                console.log(device.model);
                 this._context.set("Version", device.version);
                 this._context.set("DeviceName", device.model);
                 this._context.set("IdMobile", device.uuid);
-            } 
-            catch(err){
+                console.log("end");
+            } catch (err) {
                 console.log(err);
             }
-           mx.data.commit({
-               mxobj: object,
-               callback: function () {
-               },
-               error: function (e) {
-               }
-           });
-            
-              // get sitekey from microflow
+            mx.data.commit({
+                mxobj: object,
+                callback: function () {},
+                error: function (e) {}
+            });
+
+            // get sitekey from microflow
             if (this.mfGetSiteKey !== "" && this.siteKeyAttribute !== "") {
                 mx.data.action({
                     params: {
@@ -159,20 +159,20 @@ define([
                         actionname: this.mfGetSiteKey,
                         guids: [this._context.getGuid()]
                     },
-                    callback: dojoLang.hitch(this,function(obj){
+                    callback: dojoLang.hitch(this, function (obj) {
                         if (obj) {
                             this.siteKey = obj[0].jsonData.attributes[this.siteKeyAttribute].value;
-                        }                        
+                        }
                     }),
-                    error: dojoLang.hitch(this,function(error){
+                    error: dojoLang.hitch(this, function (error) {
                         console.log(this.id + ': An error occurred while executing microflow: ' + error.description);
                     })
                 }, this);
             } else {
-                setTimeout(dojoLang.hitch(this,this._grecaptchaRender),100);
+                setTimeout(dojoLang.hitch(this, this._grecaptchaRender), 100);
             }
-           callback();
-       },
+            callback();
+        },
         // Rerender the interface.
         _updateRendering: function () {
             domClass.add(this.alertMessageNode, "hidden");
@@ -331,8 +331,7 @@ define([
                     handleAs: "javascript"
                 }).then(dojoLang.hitch(this, function (data) {
                     this._i18nmap = window.i18nMap;
-                }), dojoLang.hitch(this, function (err) {
-                }));
+                }), dojoLang.hitch(this, function (err) {}));
             }
         },
         /**
@@ -369,14 +368,16 @@ define([
                         "defer": "true"
                     });
                     domConstruct.place(this._googleRecaptchaApiScript, dojoQuery("head")[0]);
-                } catch (e) {
-                }
+                } catch (e) {}
             }
         },
 
         _renderRecaptcha: function () {
             if (this._widgetId !== null) {
                 this._widgetId = grecaptcha.reset(this._widgetId);
+            } else if (typeof (device) !== "undefined") {
+                dojoHtml.set(this.alertMessageNode, 'inloggen is momenteel alleen mogelijk op de webversie');
+                $('.messagePane').removeClass('hidden');
             } else {
                 this._startTime = new Date().getTime();
                 if (typeof grecaptcha !== 'undefined') {
@@ -391,8 +392,7 @@ define([
                         });
 
                         window._grecaptcha_widgets.push(this._widgetId);
-                    } catch (e) {
-                    }
+                    } catch (e) {}
                 } else {
                     var duration = new Date().getTime() - this._startTime;
                     if (duration > 15000) {
@@ -455,7 +455,7 @@ define([
             this._context.set("UserName", username);
             this._context.set("PassWord", password);
             this._context.set("InputSMSCode", Inputsms);
-            this._context.set("Url", mx.baseUrl.replace('xas/','')); // was 'window.location.hostname' but this didn't work with phonegap
+            this._context.set("Url", mx.baseUrl.replace('xas/', '')); // was 'window.location.hostname' but this didn't work with phonegap
             mx.data.action({
                     params: {
                         applyto: 'selection',
