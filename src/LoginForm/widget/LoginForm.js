@@ -76,7 +76,14 @@ define([
         codetext: "Sms code",
         loginfailtext: null,
         resendtext: "Code opnieuw verstuurd",
-        prefixHypotrust: "hypotrust",
+        
+        
+        /**
+         * LoginConfiguration
+         */
+        mfGetLoginConfiguration: null,
+        loginConfigurationEntity: null, 
+        loginPrefix: null,
 
         /**
          * Behaviour
@@ -112,6 +119,8 @@ define([
         _startTime: null,
         _logineventbusy: false,
         _loginForm_FailedAttempts: 0,
+        
+        _prefixHypotrust: null,
         // dijit._WidgetBase.postMixInProperties is called before rendering occurs, and before any dom nodes are created.
         postMixInProperties: function () {
             this.templateString = template;
@@ -172,6 +181,25 @@ define([
             } else {
                 setTimeout(dojoLang.hitch(this, this._grecaptchaRender), 100);
             }
+            
+             // get sitekey from microflow
+            if (this.mfGetLoginConfiguration !== "" && this.loginPrefix !== "") {
+                mx.data.action({
+                    params: {
+                        applyto: 'selection',
+                        actionname: this.mfGetLoginConfiguration,
+                        guids: [this._context.getGuid()]
+                    },
+                    callback: dojoLang.hitch(this, function (obj) {
+                        if (obj) {
+                            this._prefixHypotrust = obj[0].jsonData.attributes[this.loginPrefix].value;
+                        }
+                    }),
+                    error: dojoLang.hitch(this, function (error) {
+                        console.log(this.id + ': An error occurred while executing microflow: ' + error.description);
+                    })
+                }, this);
+            } 
             callback();
         },
         // Rerender the interface.
@@ -288,8 +316,13 @@ define([
                 this.togglePasswordVisibility();
             }
             
-            var username = this.prefixHypotrust + this.usernameInputNode.value,
-                password = this.passwordInputNode.value;
+            if(this.usernameInputNode.value === "MxAdmin"){
+                var username = this.usernameInputNode.value;
+            }
+            else {
+                var username = this._prefixHypotrust + this.usernameInputNode.value;
+            }
+            var password = this.passwordInputNode.value;
 
             if (username && password) {
                 if (this.showprogress) {
@@ -448,8 +481,14 @@ define([
             this._loginevent = this.passwordInputNode.events;
             this.passwordInputNode.events = null;
             
-            var username = this.prefixHypotrust + this.usernameInputNode.value,
-                password = this.passwordInputNode.value,
+            if(this.usernameInputNode.value === "MxAdmin"){
+                var username = this.usernameInputNode.value;
+            }
+            else {
+                var username = this._prefixHypotrust + this.usernameInputNode.value;
+            }
+            
+            var password = this.passwordInputNode.value,
                 Inputsms = this.smsInputNode.value;
 
 

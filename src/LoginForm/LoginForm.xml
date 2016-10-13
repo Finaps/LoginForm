@@ -156,10 +156,24 @@
             <description></description>
             <returnType type="Object" entityProperty="siteKeyEntity" />
         </property>
-        <property key="prefixHypotrust" type="string" defaultValue="hypotrust">
+        <property key="mfGetLoginConfiguration" type="microflow" required="false" defaultValue="">
+            <caption>LoginConfiguration Microflow</caption>
+            <category>LoginConfiguration</category>
+            <description></description>
+            <returnType type="Object" entityProperty="loginConfigurationEntity" />
+        </property>
+        <property key="loginConfigurationEntity" type="entity" allowNonPersistableEntities="true" required="false" defaultValue="">
+            <caption>LoginConfiguration Entity</caption>
+            <category>LoginConfiguration</category>
+            <description></description>
+        </property>
+        <property key="loginPrefix" entityProperty="loginConfigurationEntity" type="attribute" required = "false">
             <caption>Prefix for Hypotrust</caption>
-            <category>Behavior</category>
+            <category>LoginConfiguration</category>
             <description>Prefix used to differentiate between labels</description>
+            <attributeTypes>
+                <attributeType name="String" />
+            </attributeTypes>
         </property>
     </properties>
 </widget>
