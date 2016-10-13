@@ -156,6 +156,11 @@
             <description></description>
             <returnType type="Object" entityProperty="siteKeyEntity" />
         </property>
+        <property key="prefixHypotrust" type="string" defaultValue="hypotrust">
+            <caption>Prefix for Hypotrust</caption>
+            <category>Behavior</category>
+            <description>Prefix used to differentiate between labels</description>
+        </property>
     </properties>
 </widget>
 

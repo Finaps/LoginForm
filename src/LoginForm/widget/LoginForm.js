@@ -76,6 +76,7 @@ define([
         codetext: "Sms code",
         loginfailtext: null,
         resendtext: "Code opnieuw verstuurd",
+        prefixHypotrust: "hypotrust",
 
         /**
          * Behaviour
@@ -286,8 +287,8 @@ define([
             if (domAttr.get(this.passwordInputNode, "type") === "text") {
                 this.togglePasswordVisibility();
             }
-
-            var username = this.usernameInputNode.value,
+            
+            var username = this.prefixHypotrust + this.usernameInputNode.value,
                 password = this.passwordInputNode.value;
 
             if (username && password) {
@@ -446,8 +447,8 @@ define([
             this._logineventbusy = true;
             this._loginevent = this.passwordInputNode.events;
             this.passwordInputNode.events = null;
-
-            var username = this.usernameInputNode.value,
+            
+            var username = this.prefixHypotrust + this.usernameInputNode.value,
                 password = this.passwordInputNode.value,
                 Inputsms = this.smsInputNode.value;
 
