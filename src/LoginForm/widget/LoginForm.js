@@ -76,13 +76,13 @@ define([
         codetext: "Sms code",
         loginfailtext: null,
         resendtext: "Code opnieuw verstuurd",
-        
-        
+
+
         /**
          * LoginConfiguration
          */
         mfGetLoginConfiguration: null,
-        loginConfigurationEntity: null, 
+        loginConfigurationEntity: null,
         loginPrefix: null,
 
         /**
@@ -119,7 +119,7 @@ define([
         _startTime: null,
         _logineventbusy: false,
         _loginForm_FailedAttempts: 0,
-        
+
         _prefixHypotrust: null,
         // dijit._WidgetBase.postMixInProperties is called before rendering occurs, and before any dom nodes are created.
         postMixInProperties: function () {
@@ -181,8 +181,8 @@ define([
             } else {
                 setTimeout(dojoLang.hitch(this, this._grecaptchaRender), 100);
             }
-            
-             // get sitekey from microflow
+
+            // get sitekey from microflow
             if (this.mfGetLoginConfiguration !== "" && this.loginPrefix !== "") {
                 mx.data.action({
                     params: {
@@ -199,7 +199,7 @@ define([
                         console.log(this.id + ': An error occurred while executing microflow: ' + error.description);
                     })
                 }, this);
-            } 
+            }
             callback();
         },
         // Rerender the interface.
@@ -315,12 +315,15 @@ define([
             if (domAttr.get(this.passwordInputNode, "type") === "text") {
                 this.togglePasswordVisibility();
             }
-            
-            if(this.usernameInputNode.value === "MxAdmin"){
+
+            if (this.usernameInputNode.value === "MxAdmin") {
                 var username = this.usernameInputNode.value;
-            }
-            else {
-                var username = this._prefixHypotrust + this.usernameInputNode.value;
+            } else {
+                if (this._prefixHypotrust !== "null") {
+                    var username = this._prefixHypotrust + this.usernameInputNode.value;
+                } else {
+                    var username = this.usernameInputNode.value;
+                }
             }
             var password = this.passwordInputNode.value;
 
@@ -480,14 +483,17 @@ define([
             this._logineventbusy = true;
             this._loginevent = this.passwordInputNode.events;
             this.passwordInputNode.events = null;
-            
-            if(this.usernameInputNode.value === "MxAdmin"){
+
+            if (this.usernameInputNode.value === "MxAdmin") {
                 var username = this.usernameInputNode.value;
+            } else {
+                if (this._prefixHypotrust !== "null") {
+                    var username = this._prefixHypotrust + this.usernameInputNode.value;
+                } else {
+                    var username = this.usernameInputNode.value;
+                }
             }
-            else {
-                var username = this._prefixHypotrust + this.usernameInputNode.value;
-            }
-            
+
             var password = this.passwordInputNode.value,
                 Inputsms = this.smsInputNode.value;
 
