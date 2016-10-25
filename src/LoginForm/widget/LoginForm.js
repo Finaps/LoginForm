@@ -319,7 +319,7 @@ define([
             if (this.usernameInputNode.value === "MxAdmin") {
                 var username = this.usernameInputNode.value;
             } else {
-                if (this._prefixHypotrust !== "null") {
+                if (this._prefixHypotrust) {
                     var username = this._prefixHypotrust + this.usernameInputNode.value;
                 } else {
                     var username = this.usernameInputNode.value;
@@ -487,7 +487,7 @@ define([
             if (this.usernameInputNode.value === "MxAdmin") {
                 var username = this.usernameInputNode.value;
             } else {
-                if (this._prefixHypotrust !== "null") {
+                if (this._prefixHypotrust) {
                     var username = this._prefixHypotrust + this.usernameInputNode.value;
                 } else {
                     var username = this.usernameInputNode.value;
