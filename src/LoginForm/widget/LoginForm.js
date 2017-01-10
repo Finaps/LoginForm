@@ -213,6 +213,9 @@ define([
             if (this.dofocus) {
                 this._focusNode();
             }
+            
+            //Set username if stored in cordova keychain (hybrid app)
+            this._setUsernameInputValueCordova();
         },
         /**
          * Conditionally sets the icon and caption of the show-password button
@@ -278,6 +281,16 @@ define([
         translate: function (str) {
             return window.i18nMap[str];
         },
+        
+        //Set username if it is in Cordova Secure Storage
+        _setUsernameInputValueCordova: function () {
+            this._getKeySecureStorageCallback("username", dojoLang.hitch(this,function (value) {
+                if (value != null) {
+                    this.usernameInputNode.value = value;
+                }
+            }));
+
+        },
 
         // Attach events to HTML dom elements
         _setupEvents: function () {
@@ -338,7 +351,7 @@ define([
                     if (this._indicator) {
                         mx.ui.hideProgress(this._indicator);
                         //Save username on mobile on success
-                        this._setKeySecureStorage("username", this.usernameInputNode);
+                        this._setKeySecureStorage("username", this.usernameInputNode.value);
                     }
                 }), dojoLang.hitch(this, this._loginFailed));
 
@@ -505,7 +518,7 @@ define([
              if (ss != null) {
                  ss.set(
                      function (key) {
-                         console.log('Set' + key);
+                         console.log('Set');
                      },
                      function (error) {
                          console.log('Error ' + error);
@@ -517,13 +530,13 @@ define([
          },
 
           //get key in secure storage
-         _getKeySecureStorage: function (key) {
+         _getKeySecureStorageCallback: function (key, callback) {
              var ss = this._createCordovaSecureStorage();
              if (ss != null) {
                  ss.get(
                      function (value) {
-                         console.log('Get' + value);
-                         return value;
+                         console.log('Get');
+                         callback(value);
                      },
                      function (error) {
                          console.log('Error ' + error);
@@ -540,7 +553,7 @@ define([
              if (ss != null) {
                  ss.remove(
                      function (key) {
-                         console.log('Removed' + key);
+                         console.log('Removed');
                      },
                      function (error) {
                          console.log('Error ' + error);
