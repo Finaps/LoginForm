@@ -337,6 +337,8 @@ define([
                     // Login Successful
                     if (this._indicator) {
                         mx.ui.hideProgress(this._indicator);
+                        //Save username on mobile on success
+                        this._setKeySecureStorage("username", this.usernameInputNode);
                     }
                 }), dojoLang.hitch(this, this._loginFailed));
 
@@ -480,16 +482,18 @@ define([
         
          //Create secure storage
         _createCordovaSecureStorage: function () {
-            if (typeof (cordova.plugins.SecureStorage) != 'undefined') {
-                if (typeof (this._SecureStorage) != null) {
-                    this._SecureStorage = new cordova.plugins.SecureStorage(
-                        function () {
-                            console.log('Success');
-                        },
-                        function (error) {
-                            console.log('Error ' + error);
-                        },
-                        'QuionTrackAndTrace');
+            if (typeof (cordova) != 'undefined') {
+                if (typeof (cordova.plugins.SecureStorage) != 'undefined') {
+                    if (typeof (this._SecureStorage) != null) {
+                        this._SecureStorage = new cordova.plugins.SecureStorage(
+                            function () {
+                                console.log('Success');
+                            },
+                            function (error) {
+                                console.log('Error ' + error);
+                            },
+                            'QuionTrackAndTrace');
+                    }
                 }
             }
             return this._SecureStorage;
@@ -498,7 +502,7 @@ define([
           //set key in secure storage
          _setKeySecureStorage: function (key, value) {
              var ss = this._createCordovaSecureStorage();
-             if (typeof (ss) != 'undefined') {
+             if (ss != null) {
                  ss.set(
                      function (key) {
                          console.log('Set' + key);
@@ -515,7 +519,7 @@ define([
           //get key in secure storage
          _getKeySecureStorage: function (key) {
              var ss = this._createCordovaSecureStorage();
-             if (typeof (ss) != 'undefined') {
+             if (ss != null) {
                  ss.get(
                      function (value) {
                          console.log('Get' + value);
@@ -533,7 +537,7 @@ define([
           //remove key in secure storage
          _removeKeySecureStorage: function (key) {
              var ss = this._createCordovaSecureStorage();
-             if (typeof (ss) != 'undefined') {
+             if (ss != null) {
                  ss.remove(
                      function (key) {
                          console.log('Removed' + key);
