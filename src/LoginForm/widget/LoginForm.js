@@ -119,8 +119,9 @@ define([
         _startTime: null,
         _logineventbusy: false,
         _loginForm_FailedAttempts: 0,
-
+        
         _prefixHypotrust: null,
+        _SecureStorage: null,
         // dijit._WidgetBase.postMixInProperties is called before rendering occurs, and before any dom nodes are created.
         postMixInProperties: function () {
             this.templateString = template;
@@ -182,7 +183,7 @@ define([
                 setTimeout(dojoLang.hitch(this, this._grecaptchaRender), 100);
             }
 
-            // get sitekey from microflow
+            // get loginconfiguration from microflow
             if (this.mfGetLoginConfiguration !== "" && this.loginPrefix !== "") {
                 mx.data.action({
                     params: {
@@ -472,8 +473,80 @@ define([
         uninitialize: function () {
             // Clean up listeners, helper objects, etc. There is no need to remove listeners added with this.connect / this.subscribe / this.own.
         },
+        
+         /**
+         *Hybrid mobile options
+         */
+        
+         //Create secure storage
+        _createCordovaSecureStorage: function () {
+            if (typeof (cordova.plugins.SecureStorage) != 'undefined') {
+                if (typeof (this._SecureStorage) != null) {
+                    this._SecureStorage = new cordova.plugins.SecureStorage(
+                        function () {
+                            console.log('Success');
+                        },
+                        function (error) {
+                            console.log('Error ' + error);
+                        },
+                        'QuionTrackAndTrace');
+                }
+            }
+            return this._SecureStorage;
+        },
 
+          //set key in secure storage
+         _setKeySecureStorage: function (key, value) {
+             var ss = this._createCordovaSecureStorage();
+             if (typeof (ss) != 'undefined') {
+                 ss.set(
+                     function (key) {
+                         console.log('Set' + key);
+                     },
+                     function (error) {
+                         console.log('Error ' + error);
+                     },
+                     key, value
+                 );
+             }
 
+         },
+
+          //get key in secure storage
+         _getKeySecureStorage: function (key) {
+             var ss = this._createCordovaSecureStorage();
+             if (typeof (ss) != 'undefined') {
+                 ss.get(
+                     function (value) {
+                         console.log('Get' + value);
+                         return value;
+                     },
+                     function (error) {
+                         console.log('Error ' + error);
+                     },
+                     key
+                 );
+             }
+             return null;
+         },
+
+          //remove key in secure storage
+         _removeKeySecureStorage: function (key) {
+             var ss = this._createCordovaSecureStorage();
+             if (typeof (ss) != 'undefined') {
+                 ss.remove(
+                     function (key) {
+                         console.log('Removed' + key);
+                     },
+                     function (error) {
+                         console.log('Error ' + error);
+                     },
+                     key
+                 );
+             }
+
+         },
+        
         // prepare login
         _prepareLogin: function (e) {
             if (this._logineventbusy === true) {
