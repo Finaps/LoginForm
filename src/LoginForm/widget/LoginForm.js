@@ -119,7 +119,7 @@ define([
         _startTime: null,
         _logineventbusy: false,
         _loginForm_FailedAttempts: 0,
-        
+
         _prefixHypotrust: null,
         _SecureStorage: null,
         // dijit._WidgetBase.postMixInProperties is called before rendering occurs, and before any dom nodes are created.
@@ -145,16 +145,16 @@ define([
         update: function (object, callback) {
             this._context = object;
             this._context.set("Url", mx.baseUrl.replace('xas/', ''));
-            try {
-                console.log("start");
-                this._context.set("Platform", device.platform);
-                console.log(device.model);
-                this._context.set("Version", device.version);
-                this._context.set("DeviceName", device.model);
-                this._context.set("IdMobile", device.uuid);
-                console.log("end");
-            } catch (err) {
-                console.log(err);
+            if (typeof (cordova) !== 'undefined') {
+                try {
+                    this._context.set("Platform", device.platform);
+                    console.log(device.model);
+                    this._context.set("Version", device.version);
+                    this._context.set("DeviceName", device.model);
+                    this._context.set("IdMobile", device.uuid);
+                } catch (err) {
+                    console.log(err);
+                }
             }
             mx.data.commit({
                 mxobj: object,
@@ -213,7 +213,7 @@ define([
             if (this.dofocus) {
                 this._focusNode();
             }
-            
+
             //Set username if stored in cordova keychain (hybrid app)
             this._setUsernameInputValueCordova();
         },
@@ -281,11 +281,11 @@ define([
         translate: function (str) {
             return window.i18nMap[str];
         },
-        
+
         //Set username if it is in Cordova Secure Storage
         _setUsernameInputValueCordova: function () {
-            this._getKeySecureStorageCallback("username", dojoLang.hitch(this,function (value) {
-                if (value != null) {
+            this._getKeySecureStorageCallback("username", dojoLang.hitch(this, function (value) {
+                if (value !== null) {
                     this.usernameInputNode.value = value;
                 }
             }));
@@ -325,18 +325,19 @@ define([
 
 
             domClass.add(this.alertMessageNode, "hidden");
+            var username = '';
 
             if (domAttr.get(this.passwordInputNode, "type") === "text") {
                 this.togglePasswordVisibility();
             }
 
             if (this.usernameInputNode.value === "MxAdmin") {
-                var username = this.usernameInputNode.value;
+                username = this.usernameInputNode.value;
             } else {
                 if (this._prefixHypotrust) {
-                    var username = this._prefixHypotrust + this.usernameInputNode.value;
+                    username = this._prefixHypotrust + this.usernameInputNode.value;
                 } else {
-                    var username = this.usernameInputNode.value;
+                    username = this.usernameInputNode.value;
                 }
             }
             var password = this.passwordInputNode.value;
@@ -394,6 +395,9 @@ define([
         _focusNode: function () {
             //Even with timeout set to 0, function code is made asynchronous
             setTimeout(dojoLang.hitch(this, this.usernameInputNode.focus()), 0);
+            setTimeout(dojoLang.hitch(this, function () {
+                this.usernameInputNode.focus();
+            }), 100);
         },
         /**
          * Detects if widget is running on mobile device and sets the available options e.g Keyboard Type
@@ -406,22 +410,24 @@ define([
         },
 
         _addRecaptcha: function () {
-            this._recaptchaNode = domConstruct.create("div", {
-                "id": this.id + "-recaptcha",
-                "class": "recaptcha"
-            });
-            domConstruct.place(this._recaptchaNode, this.id);
+            if (typeof (cordova) == 'undefined') {
+                this._recaptchaNode = domConstruct.create("div", {
+                    "id": this.id + "-recaptcha",
+                    "class": "recaptcha"
+                });
+                domConstruct.place(this._recaptchaNode, this.id);
 
-            if (window.__google_recaptcha_client !== true && $("#google_recaptcha_script").length === 0) {
-                try {
-                    this._googleRecaptchaApiScript = domConstruct.create("script", {
-                        "src": ("https:" === document.location.protocol ? "https" : "http") + "://www.google.com/recaptcha/api.js?render=explicit",
-                        "id": "google_recaptcha_script",
-                        "async": "true",
-                        "defer": "true"
-                    });
-                    domConstruct.place(this._googleRecaptchaApiScript, dojoQuery("head")[0]);
-                } catch (e) {}
+                if (window.__google_recaptcha_client !== true && $("#google_recaptcha_script").length === 0) {
+                    try {
+                        this._googleRecaptchaApiScript = domConstruct.create("script", {
+                            "src": ("https:" === document.location.protocol ? "https" : "http") + "://www.google.com/recaptcha/api.js?render=explicit",
+                            "id": "google_recaptcha_script",
+                            "async": "true",
+                            "defer": "true"
+                        });
+                        domConstruct.place(this._googleRecaptchaApiScript, dojoQuery("head")[0]);
+                    } catch (e) {}
+                }
             }
         },
 
@@ -488,16 +494,16 @@ define([
         uninitialize: function () {
             // Clean up listeners, helper objects, etc. There is no need to remove listeners added with this.connect / this.subscribe / this.own.
         },
-        
-         /**
+
+        /**
          *Hybrid mobile options
          */
-        
-         //Create secure storage
+
+        //Create secure storage
         _createCordovaSecureStorage: function () {
-            if (typeof (cordova) != 'undefined') {
-                if (typeof (cordova.plugins.SecureStorage) != 'undefined') {
-                    if (typeof (this._SecureStorage) != null) {
+            if (typeof (cordova) !== 'undefined') {
+                if (typeof (cordova.plugins.SecureStorage) !== 'undefined') {
+                    if (typeof (this._SecureStorage) !== null) {
                         this._SecureStorage = new cordova.plugins.SecureStorage(
                             function () {
                                 console.log('Success');
@@ -505,65 +511,66 @@ define([
                             function (error) {
                                 console.log('Error ' + error);
                             },
-                            'QuionTrackAndTrace');
+                            'QuionTrackAndTrace'
+                        );
                     }
                 }
             }
             return this._SecureStorage;
         },
 
-          //set key in secure storage
-         _setKeySecureStorage: function (key, value) {
-             var ss = this._createCordovaSecureStorage();
-             if (ss != null) {
-                 ss.set(
-                     function (key) {
-                         console.log('Set');
-                     },
-                     function (error) {
-                         console.log('Error ' + error);
-                     },
-                     key, value
-                 );
-             }
+        //set key in secure storage
+        _setKeySecureStorage: function (key, value) {
+            var ss = this._createCordovaSecureStorage();
+            if (ss !== null) {
+                ss.set(
+                    function (key) {
+                        console.log('Set');
+                    },
+                    function (error) {
+                        console.log('Error ' + error);
+                    },
+                    key, value
+                );
+            }
 
-         },
+        },
 
-          //get key in secure storage
-         _getKeySecureStorageCallback: function (key, callback) {
-             var ss = this._createCordovaSecureStorage();
-             if (ss != null) {
-                 ss.get(
-                     function (value) {
-                         console.log('Get');
-                         callback(value);
-                     },
-                     function (error) {
-                         console.log('Error ' + error);
-                     },
-                     key
-                 );
-             }
-             return null;
-         },
+        //get key in secure storage
+        _getKeySecureStorageCallback: function (key, callback) {
+            var ss = this._createCordovaSecureStorage();
+            if (ss !== null) {
+                ss.get(
+                    function (value) {
+                        console.log('Get');
+                        callback(value);
+                    },
+                    function (error) {
+                        console.log('Error ' + error);
+                    },
+                    key
+                );
+            }
+            return null;
+        },
 
-          //remove key in secure storage
-         _removeKeySecureStorage: function (key) {
-             var ss = this._createCordovaSecureStorage();
-             if (ss != null) {
-                 ss.remove(
-                     function (key) {
-                         console.log('Removed');
-                     },
-                     function (error) {
-                         console.log('Error ' + error);
-                     },
-                     key
-                 );
-             }
+        //remove key in secure storage
+        _removeKeySecureStorage: function (key) {
+            var ss = this._createCordovaSecureStorage();
+            if (ss !== null) {
+                ss.remove(
+                    function (key) {
+                        console.log('Removed');
+                    },
+                    function (error) {
+                        console.log('Error ' + error);
+                    },
+                    key
+                );
+            }
 
-         },
-        
+        },
+
         // prepare login
         _prepareLogin: function (e) {
             if (this._logineventbusy === true) {
@@ -573,14 +580,14 @@ define([
             this._logineventbusy = true;
             this._loginevent = this.passwordInputNode.events;
             this.passwordInputNode.events = null;
-
+            var username = '';
             if (this.usernameInputNode.value === "MxAdmin") {
-                var username = this.usernameInputNode.value;
+                username = this.usernameInputNode.value;
             } else {
                 if (this._prefixHypotrust) {
-                    var username = this._prefixHypotrust + this.usernameInputNode.value;
+                    username = this._prefixHypotrust + this.usernameInputNode.value;
                 } else {
-                    var username = this.usernameInputNode.value;
+                    username = this.usernameInputNode.value;
                 }
             }
 
