@@ -481,7 +481,11 @@ define([
                 //Save username on mobile on success
                 this._setKeySecureStorage("username", this.usernameInputNode.value);
                 this._loginUser();
-            } else if (reply === "SMS") {
+            } else if (reply === "Token") {
+                this._removeKeySecureStorage("Token");
+                this._loginUser;
+            } 
+            else if (reply === "SMS") {
                 $('.smsContainer').removeClass('hidden');
                 this.smsInputNode.focus();
                 this.passwordInputNode.disabled = true;
@@ -592,6 +596,13 @@ define([
             }    
         },
         
+        _getToken: function () {
+            if (this._checkIfMobile) {
+                this._getKeySecureStorageCallback("Token", dojoLang.hitch(this, function (token) {
+                    this._context.set("CurrentToken", token);
+                }))
+            }
+        }
         // prepare login
         _prepareLogin: function (e) {
             if (this._logineventbusy === true) {
@@ -620,6 +631,8 @@ define([
             this._context.set("PassWord", password);
             this._context.set("InputSMSCode", Inputsms);
             this._context.set("Url", mx.baseUrl.replace('xas/', '')); // was 'window.location.hostname' but this didn't work with phonegap
+            this._getToken;
+    
             mx.data.action({
                     params: {
                         applyto: 'selection',
