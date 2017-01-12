@@ -351,8 +351,6 @@ define([
                     // Login Successful
                     if (this._indicator) {
                         mx.ui.hideProgress(this._indicator);
-                        //Save username on mobile on success
-                        this._setKeySecureStorage("username", this.usernameInputNode.value);
                     }
                 }), dojoLang.hitch(this, this._loginFailed));
 
@@ -467,6 +465,8 @@ define([
         // continue login
         _contLogin: function (reply) {
             if (reply === "ContLogin") {
+                //Save username on mobile on success
+                this._setKeySecureStorage("username", this.usernameInputNode.value);
                 this._loginUser();
             } else if (reply === "SMS") {
                 $('.smsContainer').removeClass('hidden');
