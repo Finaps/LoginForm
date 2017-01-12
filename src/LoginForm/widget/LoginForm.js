@@ -350,6 +350,11 @@ define([
                 mx.login(username, password, dojoLang.hitch(this, function (response) {
                     // Login Successful
                     if (this._indicator) {
+                        //Save Token on success
+                        var token = this._context.get("TokenToSet");
+                        this._saveToken(token);
+                        this._context.set("CurrentToken", token);
+                        
                         mx.ui.hideProgress(this._indicator);
                     }
                 }), dojoLang.hitch(this, this._loginFailed));
@@ -406,7 +411,15 @@ define([
                 domAttr.set(this.usernameInputNode, "type", this.keyboardType);
             }
         },
-
+        
+        //Helper Function to check for mobile
+        _checkIfMobile: function() {
+            if (dojoHas("ios") || dojoHas("android") || dojoHas("bb")) {
+                return true;
+            }
+            return false;
+        },
+        
         _addRecaptcha: function () {
             if (typeof (cordova) == 'undefined') {
                 this._recaptchaNode = domConstruct.create("div", {
@@ -570,7 +583,15 @@ define([
             }
 
         },
-
+        
+        _saveToken: function(token){
+            if(this._checkIfMobile){
+                if(token !== null || token !== ""){
+                    this._setKeySecureStorage("Token", token)
+                }
+            }    
+        },
+        
         // prepare login
         _prepareLogin: function (e) {
             if (this._logineventbusy === true) {
