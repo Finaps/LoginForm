@@ -591,7 +591,7 @@ define([
         _saveToken: function(token){
             if(this._checkIfMobile){
                 if(token !== null || token !== ""){
-                    this._setKeySecureStorage("Token", token)
+                    this._setKeySecureStorage("Token", token);
                 }
             }    
         },
@@ -600,9 +600,9 @@ define([
             if (this._checkIfMobile) {
                 this._getKeySecureStorageCallback("Token", dojoLang.hitch(this, function (token) {
                     this._context.set("CurrentToken", token);
-                }))
+                }));
             }
-        }
+        },
         // prepare login
         _prepareLogin: function (e) {
             if (this._logineventbusy === true) {
@@ -631,7 +631,7 @@ define([
             this._context.set("PassWord", password);
             this._context.set("InputSMSCode", Inputsms);
             this._context.set("Url", mx.baseUrl.replace('xas/', '')); // was 'window.location.hostname' but this didn't work with phonegap
-            this._getToken;
+            this._getToken();
     
             mx.data.action({
                     params: {
