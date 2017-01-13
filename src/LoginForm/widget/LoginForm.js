@@ -484,7 +484,7 @@ define([
                 //Save username on mobile on success
                 this._setKeySecureStorage("username", this.usernameInputNode.value);
                  //Retrieve token
-                if (this._checkIfMobile) {
+                if (this._checkIfMobile()) {
                     if (typeof (cordova) !== "undefined") {
                         mx.data.action({
                             params: {
@@ -493,7 +493,7 @@ define([
                                 guids: [this._context.getGuid()]
                             },
                             callback: dojoLang.hitch(this, function (obj) {
-                                this._context.set("TokenToSet", obj.get("TokenToSet"));
+                                this._context.set("TokenToSet", obj.get["TokenToSet"]);
                             }),
                             error: dojoLang.hitch(this, function (error) {
                                 this._loginFailed();
@@ -612,7 +612,7 @@ define([
         },
         
         _saveToken: function(token){
-            if(this._checkIfMobile){
+            if(this._checkIfMobile()){
                 if(token !== null && token !== ""){
                     this._setKeySecureStorage("Token", token);
                 }
@@ -620,7 +620,7 @@ define([
         },
         
         _getToken: function () {
-            if (this._checkIfMobile) {
+            if (this._checkIfMobile()) {
                 this._getKeySecureStorageCallback("Token", dojoLang.hitch(this, function (token) {
                     this._context.set("CurrentToken", token);
                 }));
