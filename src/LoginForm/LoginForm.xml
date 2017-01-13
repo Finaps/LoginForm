@@ -1,22 +1,8 @@
-<widget id="LoginForm.widget.LoginForm" needsEntityContext="true"
-        xmlns="http://www.mendix.com/widget/1.0/"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.mendix.com/widget/1.0/ ../../xsd/widget.xsd">
+<widget id="LoginForm.widget.LoginForm" needsEntityContext="true" xmlns="http://www.mendix.com/widget/1.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mendix.com/widget/1.0/ ../../xsd/widget.xsd">
     <name>LoginForm</name>
     <description>Login form</description>
     <icon>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJ
-        bWFnZVJlYWR5ccllPAAAAkxJREFUeNp8Uktr1FAUPjfJTDpofNQOxhcUyoCIYm1HRbDtxqELEZ/V
-        qqtacOdfqH9BEayCsxFxUQdEF4ouFLuYTSlUO1N0bMFqkREtLbWZSSaP47nJDUmz8JBD7rnfOd95
-        XYaIwBiDhIydO3v+Rt9An84ILZfLv0ql0mMAvM2Y5IZOnkdHThCX9vbszNT0LCZldq6Gur73C7mo
-        PCFXPzZBUPxYnUfTQTw5cKqupNQHsqKOHz/Rv7RmWDj/7Sc5y09D5yTB9uHrI26DLg4c7F4iOxMj
-        lrty+2uGhzh68xYP2BcSSDGnru78MenD5BTMVWYekd2MYe7C18/jr1+9h8O9eW7nQkCJOWVqiynY
-        3LGVn01xp4q/xXW6gtCW0iFeHRNbOHN5EF5euHoU9nR2wsSTZ+vpFKwxKUhALo5lgVY4XdA2pSV4
-        ePcNPH8HV2wHJ/w+dmlQbFUVOuqIRpb+vaQ9pEeE8nMe0SIcCf+uYi4LRR7rZ/CoiNUqQlbbSRaN
-        5Y8D4IhR8Sfyg4+Rr5/Kp/U1P1XA9XxElEif1/AAfi9QPOON+V2+uJOGlg0wdLEVTMEL1DUcP2bD
-        ENEmu2EGGWVSjcHYfRtWDIShS4Q1SV1BYkdvJ9oCB20nILAD+9ogwLopCJuiHU/4YpIABRi+jGWA
-        Qj9xucHZxzFqY0MFvGtFFplCAgOg55DIWidNh4unINmfZTREHrNtC93ukIIAFpXoix4F8+xtfz2Q
-        mRtVUDfg7eg9eWR3h2xayGz4j9A7UpZX3cziijvJ7X8CDACOIxoVfZ9XXAAAAABJRU5ErkJggg==
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJ bWFnZVJlYWR5ccllPAAAAkxJREFUeNp8Uktr1FAUPjfJTDpofNQOxhcUyoCIYm1HRbDtxqELEZ/V qqtacOdfqH9BEayCsxFxUQdEF4ouFLuYTSlUO1N0bMFqkREtLbWZSSaP47nJDUmz8JBD7rnfOd95 XYaIwBiDhIydO3v+Rt9An84ILZfLv0ql0mMAvM2Y5IZOnkdHThCX9vbszNT0LCZldq6Gur73C7mo PCFXPzZBUPxYnUfTQTw5cKqupNQHsqKOHz/Rv7RmWDj/7Sc5y09D5yTB9uHrI26DLg4c7F4iOxMj lrty+2uGhzh68xYP2BcSSDGnru78MenD5BTMVWYekd2MYe7C18/jr1+9h8O9eW7nQkCJOWVqiynY 3LGVn01xp4q/xXW6gtCW0iFeHRNbOHN5EF5euHoU9nR2wsSTZ+vpFKwxKUhALo5lgVY4XdA2pSV4 ePcNPH8HV2wHJ/w+dmlQbFUVOuqIRpb+vaQ9pEeE8nMe0SIcCf+uYi4LRR7rZ/CoiNUqQlbbSRaN 5Y8D4IhR8Sfyg4+Rr5/Kp/U1P1XA9XxElEif1/AAfi9QPOON+V2+uJOGlg0wdLEVTMEL1DUcP2bD ENEmu2EGGWVSjcHYfRtWDIShS4Q1SV1BYkdvJ9oCB20nILAD+9ogwLopCJuiHU/4YpIABRi+jGWA Qj9xucHZxzFqY0MFvGtFFplCAgOg55DIWidNh4unINmfZTREHrNtC93ukIIAFpXoix4F8+xtfz2Q mRtVUDfg7eg9eWR3h2xayGz4j9A7UpZX3cziijvJ7X8CDACOIxoVfZ9XXAAAAABJRU5ErkJggg==
     </icon>
     <properties>
         <property key="userexample" type="string" defaultValue="Username" required="false">
@@ -34,7 +20,7 @@
             <category>Display</category>
             <description>Login button caption</description>
         </property>
-		<property key="codetext" type="string" defaultValue="Sms code">
+        <property key="codetext" type="string" defaultValue="Sms code">
             <caption>SMS code tekst</caption>
             <category>Display</category>
             <description>Login button caption</description>
@@ -58,12 +44,12 @@
             <caption>Empty Username or Password Text</caption>
             <category>Display</category>
             <description>Displayed when Username or Password is empty</description>
-        </property>        
+        </property>
         <property key="showprogress" type="boolean" defaultValue="false">
             <caption>Show Progress Bar</caption>
             <category>Behavior</category>
             <description>Display a progress bar while signing in</description>
-        </property>        
+        </property>
         <property key="dofocus" type="boolean" defaultValue="false">
             <caption>Focus Username Input Field</caption>
             <category>Behavior</category>
@@ -122,15 +108,15 @@
             <description></description>
             <returnType type="String" />
         </property>
-		    <property key="responseTokenAttribute" type="attribute" required="true">
+        <property key="responseTokenAttribute" type="attribute" required="true">
             <caption>Recaptcha response attribute</caption>
             <category>Recaptcha</category>
             <description>Attribute to place response</description>
-			<attributeTypes>
-				 <attributeType name="String" />
-			</attributeTypes>
+            <attributeTypes>
+                <attributeType name="String" />
+            </attributeTypes>
         </property>
-<!--
+        <!--
 		<property key="recaptchaKey" type="string" required="true" defaultValue="6Lf3oScTAAAAAGVAdNUdmHLYZn-05maaSMa9fZxN">
             <caption>Recaptcha Site Key</caption>
             <category>Recaptcha</category>
@@ -167,13 +153,25 @@
             <category>LoginConfiguration</category>
             <description></description>
         </property>
-        <property key="loginPrefix" entityProperty="loginConfigurationEntity" type="attribute" required = "false">
+        <property key="loginPrefix" entityProperty="loginConfigurationEntity" type="attribute" required="false">
             <caption>Prefix for Hypotrust</caption>
             <category>LoginConfiguration</category>
             <description>Prefix used to differentiate between labels</description>
             <attributeTypes>
                 <attributeType name="String" />
             </attributeTypes>
+        </property>
+        <property key="loginObject" type="entity" allowNonPersistableEntities="true" required="false" defaultValue="">
+            <caption>loginObject Entity</caption>
+            <category>Behavior</category>
+            <description></description>
+        </property>
+        
+        <property key="mfGenerateToken" type="microflow" required="false" defaultValue="">
+            <caption>Generate Token Hybrid Mobile</caption>
+            <category>Behavior</category>
+            <description></description>
+            <returnType type="Object" entityProperty="loginObject"/>
         </property>
     </properties>
 </widget>

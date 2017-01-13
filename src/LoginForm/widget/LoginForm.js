@@ -84,12 +84,14 @@ define([
         mfGetLoginConfiguration: null,
         loginConfigurationEntity: null,
         loginPrefix: null,
-
+        
         /**
          * Behaviour
          */
         showprogress: false,
         dofocus: false,
+        mfGenerateToken: null,
+        
         /**
          * Password
          */
@@ -349,11 +351,12 @@ define([
 
                 mx.login(username, password, dojoLang.hitch(this, function (response) {
                     // Login Successful
-                    if (this._indicator) {
-                        //Save Token on success
-                        var token = this._context.get("TokenToSet");
-                        this._saveToken(token);
-                        this._context.set("CurrentToken", token);
+                    if (this._indicator) {    
+                                        
+                    //Save Token on success
+                    var token = this._context.get("TokenToSet");
+                    this._saveToken(token);
+                    this._context.set("CurrentToken", token);
                         
                         mx.ui.hideProgress(this._indicator);
                     }
@@ -480,6 +483,26 @@ define([
             if (reply === "ContLogin") {
                 //Save username on mobile on success
                 this._setKeySecureStorage("username", this.usernameInputNode.value);
+                 //Retrieve token
+                if (this._checkIfMobile) {
+                    if (typeof (cordova) !== "undefined") {
+                        mx.data.action({
+                            params: {
+                                applyto: "selection",
+                                actionname: this.mfGenerateToken,
+                                guids: [this._context.getGuid()]
+                            },
+                            callback: dojoLang.hitch(this, function (obj) {
+                                this._context.set("TokenToSet", obj.get("TokenToSet"));
+                            }),
+                            error: dojoLang.hitch(this, function (error) {
+                                this._loginFailed();
+                            }),
+                            this
+                        });
+                    }
+                }
+
                 this._loginUser();
             } else if (reply === "Token") {
                 this._removeKeySecureStorage("Token");
@@ -590,7 +613,7 @@ define([
         
         _saveToken: function(token){
             if(this._checkIfMobile){
-                if(token !== null || token !== ""){
+                if(token !== null && token !== ""){
                     this._setKeySecureStorage("Token", token);
                 }
             }    
