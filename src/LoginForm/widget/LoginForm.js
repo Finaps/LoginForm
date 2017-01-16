@@ -483,26 +483,8 @@ define([
                 //Save username on mobile on success
                 this._setKeySecureStorage("username", this.usernameInputNode.value);
                  //Retrieve token
-                if (this._checkIfMobile()) {
-                    if (typeof (cordova) !== "undefined") {
-                        mx.data.action({
-                                params: {
-                                    applyto: "selection",
-                                    actionname: this.mfGenerateToken,
-                                    guids: [this._context.getGuid()]
-                                },
-                                callback: dojoLang.hitch(this, function (obj) {
-                                    this._context.set("TokenToSet", obj[0].get("TokenToSet")); 
-                                    this._loginUser();
-                                }),
-                                error: dojoLang.hitch(this, function (error) {
-                                    this._loginFailed();
-                                })
-                            },
-                            this
-                        );
-                    }
-                }
+                this._context.set("TokenToSet", obj[0].get("TokenToSet")); 
+                this._loginUser();
             } else if (reply === "Token") {
                 this._removeKeySecureStorage("Token");
                 this._loginUser;
