@@ -351,12 +351,7 @@ define([
 
                 mx.login(username, password, dojoLang.hitch(this, function (response) {
                     // Login Successful
-                    if (this._indicator) {    
-                                        
-                    //Save Token on success
-                    var token = this._context.get("TokenToSet");
-                    this._saveToken(token);
-                        
+                    if (this._indicator) {                            
                         mx.ui.hideProgress(this._indicator);
                     }
                 }), dojoLang.hitch(this, this._loginFailed));
@@ -482,11 +477,12 @@ define([
             if (reply === "ContLogin") {
                 //Save username on mobile on success
                 this._setKeySecureStorage("username", this.usernameInputNode.value);
-                 //Retrieve token
-                this._context.set("TokenToSet", obj[0].get("TokenToSet")); 
+                //Save Token on success
+                this._saveToken(this._context.get("TokenToSet"));
                 this._loginUser();
             } else if (reply === "Token") {
                 this._removeKeySecureStorage("Token");
+                this._saveToken(this._context.get("TokenToSet"));
                 this._loginUser;
             } 
             else if (reply === "SMS") {
@@ -498,6 +494,7 @@ define([
             } else if (reply === "Recaptcha") {
                 this._renderRecaptcha();
             } else if (reply === "LoginFailed") {
+                this._removeKeySecureStorage("Token");
                 this._loginFailed();
             } else if (reply === "SMSResent") {
                 dojoHtml.set(this.alertMessageNode, this.resendtext);
