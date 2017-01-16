@@ -84,14 +84,14 @@ define([
         mfGetLoginConfiguration: null,
         loginConfigurationEntity: null,
         loginPrefix: null,
-        
+
         /**
          * Behaviour
          */
         showprogress: false,
         dofocus: false,
         mfGenerateToken: null,
-        
+
         /**
          * Password
          */
@@ -124,6 +124,7 @@ define([
 
         _prefixHypotrust: null,
         _SecureStorage: null,
+        _xdr: null,
         // dijit._WidgetBase.postMixInProperties is called before rendering occurs, and before any dom nodes are created.
         postMixInProperties: function () {
             this.templateString = template;
@@ -146,6 +147,7 @@ define([
 
         update: function (object, callback) {
             this._context = object;
+            this._getToken();
             this._context.set("Url", mx.baseUrl.replace('xas/', ''));
             if (typeof (cordova) !== 'undefined') {
                 try {
@@ -351,7 +353,7 @@ define([
 
                 mx.login(username, password, dojoLang.hitch(this, function (response) {
                     // Login Successful
-                    if (this._indicator) {                            
+                    if (this._indicator) {
                         mx.ui.hideProgress(this._indicator);
                     }
                 }), dojoLang.hitch(this, this._loginFailed));
@@ -408,17 +410,17 @@ define([
                 domAttr.set(this.usernameInputNode, "type", this.keyboardType);
             }
         },
-        
+
         //Helper Function to check for mobile
-        _checkIfMobile: function() {
+        _checkIfMobile: function () {
             if (dojoHas("ios") || dojoHas("android") || dojoHas("bb")) {
                 return true;
             }
             return false;
         },
-        
+
         _addRecaptcha: function () {
-            if (typeof(cordova) === 'undefined') {
+            if (typeof (cordova) === 'undefined') {
                 this._recaptchaNode = domConstruct.create("div", {
                     "id": this.id + "-recaptcha",
                     "class": "recaptcha"
@@ -442,7 +444,7 @@ define([
         _renderRecaptcha: function () {
             if (this._widgetId !== null) {
                 this._widgetId = grecaptcha.reset(this._widgetId);
-            } else if (typeof(device) !== "undefined") {
+            } else if (typeof (device) !== "undefined") {
                 dojoHtml.set(this.alertMessageNode, 'inloggen is momenteel alleen mogelijk op de webversie');
                 $('.messagePane').removeClass('hidden');
             } else {
@@ -483,9 +485,8 @@ define([
             } else if (reply === "Token") {
                 this._removeKeySecureStorage("Token");
                 this._saveToken(this._context.get("TokenToSet"));
-                this._loginUser;
-            } 
-            else if (reply === "SMS") {
+                this._loginUser();
+            } else if (reply === "SMS") {
                 $('.smsContainer').removeClass('hidden');
                 this.smsInputNode.focus();
                 this.passwordInputNode.disabled = true;
@@ -494,7 +495,7 @@ define([
             } else if (reply === "Recaptcha") {
                 this._renderRecaptcha();
             } else if (reply === "LoginFailed") {
-                this._removeKeySecureStorage("Token");
+                // this._removeKeySecureStorage("Token");
                 this._loginFailed();
             } else if (reply === "SMSResent") {
                 dojoHtml.set(this.alertMessageNode, this.resendtext);
@@ -588,19 +589,23 @@ define([
             }
 
         },
-        
-        _saveToken: function(token){
-            if(this._checkIfMobile()){
-                if(token !== null && token !== ""){
+
+        _saveToken: function (token) {
+            if (this._checkIfMobile()) {
+                if (token !== null && token !== "") {
                     this._setKeySecureStorage("Token", token);
                 }
-            }    
+            }
         },
-        
+
         _getToken: function () {
             if (this._checkIfMobile()) {
                 this._getKeySecureStorageCallback("Token", dojoLang.hitch(this, function (token) {
-                    this._context.set("TokenToSet", token);
+                    if (token !== null && token !== "") {
+                        //This does not seem to set.
+                        //this._context.set("CurrentToken", token);
+                        this._xdr = token;
+                    }
                 }));
             }
         },
@@ -626,14 +631,14 @@ define([
 
             var password = this.passwordInputNode.value,
                 Inputsms = this.smsInputNode.value;
-
+            var token = this._xdr;
 
             this._context.set("UserName", username);
             this._context.set("PassWord", password);
             this._context.set("InputSMSCode", Inputsms);
             this._context.set("Url", mx.baseUrl.replace('xas/', '')); // was 'window.location.hostname' but this didn't work with phonegap
-            this._getToken();
-    
+            this._context.set("CurrentToken", token);
+
             mx.data.action({
                     params: {
                         applyto: 'selection',
