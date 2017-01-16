@@ -356,7 +356,6 @@ define([
                     //Save Token on success
                     var token = this._context.get("TokenToSet");
                     this._saveToken(token);
-                    this._context.set("CurrentToken", token);
                         
                         mx.ui.hideProgress(this._indicator);
                     }
@@ -424,7 +423,7 @@ define([
         },
         
         _addRecaptcha: function () {
-            if (typeof (cordova) == 'undefined') {
+            if (typeof(cordova) === 'undefined') {
                 this._recaptchaNode = domConstruct.create("div", {
                     "id": this.id + "-recaptcha",
                     "class": "recaptcha"
@@ -448,7 +447,7 @@ define([
         _renderRecaptcha: function () {
             if (this._widgetId !== null) {
                 this._widgetId = grecaptcha.reset(this._widgetId);
-            } else if (typeof (device) !== "undefined") {
+            } else if (typeof(device) !== "undefined") {
                 dojoHtml.set(this.alertMessageNode, 'inloggen is momenteel alleen mogelijk op de webversie');
                 $('.messagePane').removeClass('hidden');
             } else {
@@ -487,23 +486,23 @@ define([
                 if (this._checkIfMobile()) {
                     if (typeof (cordova) !== "undefined") {
                         mx.data.action({
-                            params: {
-                                applyto: "selection",
-                                actionname: this.mfGenerateToken,
-                                guids: [this._context.getGuid()]
+                                params: {
+                                    applyto: "selection",
+                                    actionname: this.mfGenerateToken,
+                                    guids: [this._context.getGuid()]
+                                },
+                                callback: dojoLang.hitch(this, function (obj) {
+                                    this._context.set("TokenToSet", obj[0].get("TokenToSet")); 
+                                    this._loginUser();
+                                }),
+                                error: dojoLang.hitch(this, function (error) {
+                                    this._loginFailed();
+                                })
                             },
-                            callback: dojoLang.hitch(this, function (obj) {
-                                this._context.set("TokenToSet", obj.get["TokenToSet"]);
-                            }),
-                            error: dojoLang.hitch(this, function (error) {
-                                this._loginFailed();
-                            }),
                             this
-                        });
+                        );
                     }
                 }
-
-                this._loginUser();
             } else if (reply === "Token") {
                 this._removeKeySecureStorage("Token");
                 this._loginUser;
@@ -622,7 +621,7 @@ define([
         _getToken: function () {
             if (this._checkIfMobile()) {
                 this._getKeySecureStorageCallback("Token", dojoLang.hitch(this, function (token) {
-                    this._context.set("CurrentToken", token);
+                    this._context.set("TokenToSet", token);
                 }));
             }
         },
