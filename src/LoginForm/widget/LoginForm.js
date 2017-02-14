@@ -121,6 +121,7 @@ define([
         _loginForm_FailedAttempts: 0,
 
         _prefixHypotrust: null,
+        _prefixIqwoon: 'iq',
         _SecureStorage: null,
         // dijit._WidgetBase.postMixInProperties is called before rendering occurs, and before any dom nodes are created.
         postMixInProperties: function () {
@@ -336,6 +337,8 @@ define([
             } else {
                 if (this._prefixHypotrust) {
                     username = this._prefixHypotrust + this.usernameInputNode.value;
+                if (this._prefixIqwoon) {
+                    username = this._prefixIqwoon + this.usernameInputNode.value;                    
                 } else {
                     username = this.usernameInputNode.value;
                 }
