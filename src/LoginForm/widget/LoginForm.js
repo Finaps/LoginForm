@@ -272,7 +272,10 @@ define([
             this._logineventbusy = false;
             this.passwordInputNode.disabled = false;
             this.usernameInputNode.disabled = false;
-            this.passwordInputNode.value = '';
+            if(this.passwordInputNode.disabled = false)
+                {
+                    this.passwordInputNode.value = '';                    
+                }
         },
         /**
          * Retrieves the matching value from the internationalization object
