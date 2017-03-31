@@ -273,9 +273,13 @@ define([
             this.passwordInputNode.disabled = false;
             this.usernameInputNode.disabled = false;
             if(this.passwordInputNode.disabled = false)
-                {
+            {
                     this.passwordInputNode.value = '';                    
-                }
+            }
+            else
+            {
+                this.smsInputNode.value = '';
+            }
         },
         /**
          * Retrieves the matching value from the internationalization object
