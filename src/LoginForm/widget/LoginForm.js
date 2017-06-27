@@ -343,14 +343,16 @@ define([
                 username = this.usernameInputNode.value;
             } else {
                 if (this._prefixHypotrust) {
-                    username = this._prefixHypotrust + this.usernameInputNode.value;
+                    username = this._prefixHypotrust + this.usernameInputNode.value;                    
+                    // iOS had a bug with uppercase usernames and mx.login
+                    username.toLowerCase();
                 } else {
-                    username = this.usernameInputNode.value;
+                    username = this.usernameInputNode.value;                    
+                    // iOS had a bug with uppercase usernames and mx.login
+                    username.toLowerCase();
                 }
             }
-            var password = this.passwordInputNode.value;
-            // iOS had a bug with uppercase usernames and mx.login
-            username.toLowerCase();
+            var password = this.passwordInputNode.value;            
 
             if (username && password) {
                 if (this.showprogress) {
