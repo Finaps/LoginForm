@@ -349,6 +349,8 @@ define([
                 }
             }
             var password = this.passwordInputNode.value;
+            // iOS had a bug with uppercase usernames and mx.login
+            username.toLowerCase();
 
             if (username && password) {
                 if (this.showprogress) {
