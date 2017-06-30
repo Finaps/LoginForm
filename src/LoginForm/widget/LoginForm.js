@@ -478,7 +478,7 @@ define([
         _contLogin: function (reply) {
             if (reply === "ContLogin") {
                 //Save username on mobile on success
-                this._setKeySecureStorage("username", this.usernameInputNode.value);
+                this._setKeySecureStorage("username", this.usernameInputNode.value.toLowerCase());
                 this._loginUser();
             } else if (reply === "SMS") {
                 $('.smsContainer').removeClass('hidden');
