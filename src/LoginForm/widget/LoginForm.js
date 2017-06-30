@@ -345,11 +345,11 @@ define([
                 if (this._prefixHypotrust) {
                     username = this._prefixHypotrust + this.usernameInputNode.value;                    
                     // iOS had a bug with uppercase usernames and mx.login
-                    username.toLowerCase();
+                    username = username.toLowerCase();
                 } else {
                     username = this.usernameInputNode.value;                    
                     // iOS had a bug with uppercase usernames and mx.login
-                    username.toLowerCase();
+                    username = sername.toLowerCase();
                 }
             }
             var password = this.passwordInputNode.value;            
