@@ -120,7 +120,7 @@ define([
         _logineventbusy: false,
         _loginForm_FailedAttempts: 0,
 
-        _prefixHypotrust: null,
+        _prefix: null,
         _SecureStorage: null,
         // dijit._WidgetBase.postMixInProperties is called before rendering occurs, and before any dom nodes are created.
         postMixInProperties: function () {
@@ -193,7 +193,7 @@ define([
                     },
                     callback: dojoLang.hitch(this, function (obj) {
                         if (obj) {
-                            this._prefixHypotrust = obj[0].jsonData.attributes[this.loginPrefix].value;
+                            this._prefix = obj[0].jsonData.attributes[this.loginPrefix].value;
                         }
                     }),
                     error: dojoLang.hitch(this, function (error) {
@@ -342,14 +342,14 @@ define([
             if (this.usernameInputNode.value === "MxAdmin") {
                 username = this.usernameInputNode.value;
             } else {
-                if (this._prefixHypotrust) {
-                    username = this._prefixHypotrust + this.usernameInputNode.value;                    
+                if (this._prefix) {
+                    username = this._prefix + this.usernameInputNode.value;                    
                     // iOS had a bug with uppercase usernames and mx.login
                     username = username.toLowerCase();
                 } else {
                     username = this.usernameInputNode.value;                    
                     // iOS had a bug with uppercase usernames and mx.login
-                    username = sername.toLowerCase();
+                    username = username.toLowerCase();
                 }
             }
             var password = this.passwordInputNode.value;            
@@ -596,8 +596,8 @@ define([
             if (this.usernameInputNode.value === "MxAdmin") {
                 username = this.usernameInputNode.value;
             } else {
-                if (this._prefixHypotrust) {
-                    username = this._prefixHypotrust + this.usernameInputNode.value;
+                if (this._prefix) {
+                    username = this._prefix + this.usernameInputNode.value;
                 } else {
                     username = this.usernameInputNode.value;
                 }
