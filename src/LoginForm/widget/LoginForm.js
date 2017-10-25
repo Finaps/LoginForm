@@ -329,7 +329,7 @@ define([
          * @param e
          * @private
          */
-        _loginUser: function (e) {
+        _loginUser: function (userName) {
 
 
             domClass.add(this.alertMessageNode, "hidden");
@@ -339,19 +339,7 @@ define([
                 this.togglePasswordVisibility();
             }
 
-            if (this.usernameInputNode.value === "MxAdmin") {
-                username = this.usernameInputNode.value;
-            } else {
-                if (this._prefix) {
-                    username = this._prefix + this.usernameInputNode.value;                    
-                    // iOS had a bug with uppercase usernames and mx.login
-                    username = username.toLowerCase();
-                } else {
-                    username = this.usernameInputNode.value;                    
-                    // iOS had a bug with uppercase usernames and mx.login
-                    username = username.toLowerCase();
-                }
-            }
+            username = userName;
             var password = this.passwordInputNode.value;            
 
             if (username && password) {
@@ -370,8 +358,6 @@ define([
                 domClass.remove(this.alertMessageNode, "hidden");
                 this.alertMessageNode.innerHTML = this.emptytext;
             }
-
-            dojoEvent.stop(e);
         },
         /**
          * Show/hide the Password
@@ -475,11 +461,13 @@ define([
 
 
         // continue login
-        _contLogin: function (reply) {
+        _contLogin: function (response) {
+            var reply = response[0].jsonData.attributes.LoginReply.value
             if (reply === "ContLogin") {
                 //Save username on mobile on success
+                var username = response[0].jsonData.attributes.UserName.value
                 this._setKeySecureStorage("username", this.usernameInputNode.value.toLowerCase());
-                this._loginUser();
+                this._loginUser(username);
             } else if (reply === "SMS") {
                 $('.smsContainer').removeClass('hidden');
                 this.smsInputNode.focus();

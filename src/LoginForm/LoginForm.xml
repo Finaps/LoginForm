@@ -102,11 +102,16 @@
                 <enumerationValue key="number">Number</enumerationValue>
             </enumerationValues>
         </property>
+        <property key="loginResponse" type="entity" allowNonPersistableEntities="true" required="false" defaultValue="">
+            <caption>LoginResponse Entity</caption>
+            <category>Behavior</category>
+            <description></description>
+        </property>
         <property key="mfCheckToken" type="microflow" required="false" defaultValue="">
             <caption>Two Factor start flow</caption>
             <category>Behavior</category>
             <description></description>
-            <returnType type="String" />
+            <returnType type="Object" entityProperty="loginResponse"/>
         </property>
         <property key="responseTokenAttribute" type="attribute" required="true">
             <caption>Recaptcha response attribute</caption>
